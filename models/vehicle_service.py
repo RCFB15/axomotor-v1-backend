@@ -23,5 +23,11 @@ class VehicleService(SQLModel, table=True):
     updated_at: Optional[datetime] = None
 
     vehicle: Optional['Vehicle'] = Relationship(back_populates='services')
-    created_by: Optional['User'] = Relationship(back_populates='vehicle_services_created')
-    authorized_by: Optional['User'] = Relationship(back_populates='vehicle_services_authorized')
+    created_by: Optional['User'] = Relationship(
+        back_populates='vehicle_services_created',
+        sa_relationship_kwargs={'foreign_keys': '[VehicleService.created_by_id]'}
+    )
+    authorized_by: Optional['User'] = Relationship(
+        back_populates='vehicle_services_authorized',
+        sa_relationship_kwargs={'foreign_keys': '[VehicleService.authorized_by_id]'}
+    )

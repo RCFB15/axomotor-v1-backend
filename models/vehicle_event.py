@@ -20,5 +20,5 @@ class VehicleEvent(SQLModel, table=True):
     additional_data: Optional[dict] = Field(default=None, sa_column=Column(JSON))
     registered_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
-    vehicle: Optional['Vehicle'] = Relationship(back_populates='devices')
+    vehicle: Optional['Vehicle'] = Relationship(back_populates='events')
     info: Optional['VehicleEventCode'] = Relationship(back_populates='events')

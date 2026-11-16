@@ -11,6 +11,7 @@ if TYPE_CHECKING:
     from models.driver import Driver
     from models.known_location import KnownLocation
     from models.trip_position import TripPosition
+    from models.incident import Incident
 
 class Trip(SQLModel, table=True):
     __tablename__ = 'trips'
@@ -31,9 +32,19 @@ class Trip(SQLModel, table=True):
 
     vehicle: Optional['Vehicle'] = Relationship(back_populates='trips')
     driver: Optional['Driver'] = Relationship(back_populates='trips')
-    origin: Optional['KnownLocation'] = Relationship(back_populates='trip_origins')
-    destination: Optional['KnownLocation'] = Relationship(back_populates='trip_destinations')
+    origin: Optional['KnownLocation'] = Relationship(
+        back_populates='trip_origins',
+        sa_relationship_kwargs={'foreign_keys': '[Trip.origin_id]'}
+    )
+    destination: Optional['KnownLocation'] = Relationship(
+        back_populates='trip_destinations',
+        sa_relationship_kwargs={'foreign_keys': '[Trip.destination_id]'}
+    )
     positions: List['TripPosition'] = Relationship(
+        back_populates='trip',
+        sa_relationship_kwargs={'cascade': 'all, delete-orphan'}
+    )
+    incidents: List['Incident'] = Relationship(
         back_populates='trip',
         sa_relationship_kwargs={'cascade': 'all, delete-orphan'}
     )

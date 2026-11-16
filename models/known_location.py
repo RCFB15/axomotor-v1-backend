@@ -21,9 +21,15 @@ class KnownLocation(SQLModel, table=True):
 
     trip_origins: List['Trip'] = Relationship(
         back_populates='origin',
-        sa_relationship_kwargs={'cascade': 'all, delete-orphan'}
+        sa_relationship_kwargs={
+            'cascade': 'all, delete-orphan',
+            'foreign_keys': '[Trip.origin_id]'
+        }
     )
     trip_destinations: List['Trip'] = Relationship(
         back_populates='destination',
-        sa_relationship_kwargs={'cascade': 'all, delete-orphan'}
+        sa_relationship_kwargs={
+            'cascade': 'all, delete-orphan',
+            'foreign_keys': '[Trip.destination_id]'
+        }
     )

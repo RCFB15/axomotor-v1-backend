@@ -31,11 +31,23 @@ class Incident(SQLModel, table=True):
     reviewed_at: Optional[datetime] = None
     closed_at: Optional[datetime] = None
 
-    related_incident: Optional[Incident] = Relationship(back_populates='related_incident')
+    related_incident: Optional[Incident] = Relationship(
+        back_populates='subsequent_incident',
+        sa_relationship_kwargs={'remote_side': '[Incident.incident_id]'}
+    )
+    subsequent_incident: Optional[Incident] = Relationship(
+        back_populates='related_incident'
+    )
     trip: Optional['Trip'] = Relationship(back_populates='incidents')
     info: Optional['IncidentCode'] = Relationship(back_populates='incidents')
-    created_by: Optional['User'] = Relationship(back_populates='incidents_created')
-    reviewed_by: Optional['User'] = Relationship(back_populates='incidents_reviewed')
+    created_by: Optional['User'] = Relationship(
+        back_populates='incidents_created',
+        sa_relationship_kwargs={'foreign_keys': '[Incident.created_by_id]'}
+    )
+    reviewed_by: Optional['User'] = Relationship(
+        back_populates='incidents_reviewed',
+        sa_relationship_kwargs={'foreign_keys': '[Incident.reviewed_by_id]'}
+    )
     media_files: List['IncidentMedia'] = Relationship(
         back_populates='incident',
         sa_relationship_kwargs={'cascade': 'all, delete-orphan'}

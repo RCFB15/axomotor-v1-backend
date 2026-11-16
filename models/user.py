@@ -30,7 +30,7 @@ class User(SQLModel, table=True):
 
     driver: Optional['Driver'] = Relationship(
         back_populates='user',
-        sa_relationship_kwargs={'cascade': 'all, delete-orphan'}
+        sa_relationship_kwargs={'cascade': 'all, delete-orphan', 'uselist': False}
     )
     alerts: List['UserAlert'] = Relationship(
         back_populates='user',
@@ -38,17 +38,29 @@ class User(SQLModel, table=True):
     )
     vehicle_services_created: List['VehicleService'] = Relationship(
         back_populates='created_by',
-        sa_relationship_kwargs={'cascade': 'all, delete-orphan'}
+        sa_relationship_kwargs={
+            'cascade': 'all, delete-orphan',
+            'foreign_keys': '[VehicleService.created_by_id]'
+        }
     )
     vehicle_services_authorized: List['VehicleService'] = Relationship(
         back_populates='authorized_by',
-        sa_relationship_kwargs={'cascade': 'all, delete-orphan'}
+        sa_relationship_kwargs={
+            'cascade': 'all, delete-orphan',
+            'foreign_keys': '[VehicleService.authorized_by_id]'
+        }
     )
     incidents_created: List['Incident'] = Relationship(
         back_populates='created_by',
-        sa_relationship_kwargs={'cascade': 'all, delete-orphan'}
+        sa_relationship_kwargs={
+            'cascade': 'all, delete-orphan',
+            'foreign_keys': '[Incident.created_by_id]'
+        }
     )
     incidents_reviewed: List['Incident'] = Relationship(
         back_populates='reviewed_by',
-        sa_relationship_kwargs={'cascade': 'all, delete-orphan'}
+        sa_relationship_kwargs={
+            'cascade': 'all, delete-orphan',
+            'foreign_keys': '[Incident.reviewed_by_id]'
+        }
     )

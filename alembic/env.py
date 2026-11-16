@@ -6,22 +6,7 @@ from alembic import context
 from sqlmodel import SQLModel
 
 from core.config import settings
-from models import (
-    codes,
-    enums,
-    incident,
-    trip,
-    user,
-    vehicle_event,
-    vehicle_service,
-    driver,
-    incident_media,
-    known_location,
-    trip_position,
-    user_alert,
-    vehicle_device,
-    vehicle,
-)
+from models import *
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
