@@ -4,7 +4,11 @@ from fastapi import FastAPI
 from sqlmodel import SQLModel
 from fastapi.middleware.cors import CORSMiddleware
 
-from api.v1.user_api import router as users_router
+from api.v1 import (
+    users_router,
+    drivers_router
+)
+
 from core.config import settings
 from db.database import engine
 
@@ -24,6 +28,7 @@ app.add_middleware(
 )
 
 app.include_router(users_router, prefix='/api/v1/users', tags=['Users'])
+app.include_router(drivers_router, prefix='/api/v1/drivers', tags=['Drivers'])
 
 @app.get('/health', tags=['Health'])
 def health_check() -> dict[str, str]:

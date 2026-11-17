@@ -19,7 +19,7 @@ class Driver(SQLModel, table=True):
     license_class: LicenseClass
     license_iss_date: date
     license_exp_date: date
-    is_active: bool
+    is_active: bool = Field(default=False)
     is_enabled: bool = Field(default=True)
     registered_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: Optional[datetime] = None

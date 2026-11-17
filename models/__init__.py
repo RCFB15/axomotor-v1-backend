@@ -1,3 +1,4 @@
+from .enums import *
 from .user import User
 from .driver import Driver
 from .codes import VehicleEventCode, IncidentCode

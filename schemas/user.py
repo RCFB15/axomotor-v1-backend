@@ -22,7 +22,7 @@ class UserUpdate(SQLModel):
     email: Optional[EmailStr] = Field(default=None, max_length=120)
     username: Optional[str] = Field(default=None, min_length=3, max_length=16)
     phone_number: Optional[str] = Field(default=None, max_length=16)
-    is_enabled: bool | None = None
+    is_enabled: Optional[bool] = None
 
 class UserUpdatePassword(SQLModel):
     current_password: str
