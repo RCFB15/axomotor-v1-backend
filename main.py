@@ -6,7 +6,8 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from api.v1 import (
     users_router,
-    drivers_router
+    drivers_router,
+    link_router,
 )
 
 from core.config import settings
@@ -29,6 +30,7 @@ app.add_middleware(
 
 app.include_router(users_router, prefix='/api/v1/users', tags=['Users'])
 app.include_router(drivers_router, prefix='/api/v1/drivers', tags=['Drivers'])
+app.include_router(link_router, prefix='/api/v1/link_bot', tags=['Link Telegram Bot'])
 
 @app.get('/health', tags=['Health'])
 def health_check() -> dict[str, str]:

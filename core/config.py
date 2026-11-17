@@ -12,6 +12,9 @@ class Settings(BaseSettings):
         "http://localhost:3000",
     ]
 
+    LINKING_TOKEN_EXPIRE_MINUTES: int = 10
+    TELEGRAM_BOT_USERNAME: str
+
     model_config = SettingsConfigDict(env_file=".env", extra="ignore")
 
 settings = Settings()

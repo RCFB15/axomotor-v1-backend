@@ -14,3 +14,4 @@ from .trip_position import TripPosition
 from .user_alert import UserAlert
 from .vehicle_device import VehicleDevice
 from .vehicle import Vehicle
+from .linking_token import LinkingToken

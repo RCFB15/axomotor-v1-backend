@@ -1,18 +1,13 @@
-from datetime import timedelta
-from typing import Annotated
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, select
 
 from api.v1.dependencies import get_current_user
-from core.config import settings
-from core.security import create_access_token, get_password_hash, verify_password
 from db.database import get_session
 from models import Driver, User, UserRole
-from schemas.driver import DriverCreate, DriverUpdate, DriverResponse
+from schemas.driver import DriverCreate, DriverUpdate, DriverResponse, DriverLink, LinkCreateResponse
 
 router = APIRouter()
 
@@ -61,7 +56,6 @@ def register_driver(
     try:
         session.commit()
     except IntegrityError as e:
-        print(e)
         session.rollback()
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,

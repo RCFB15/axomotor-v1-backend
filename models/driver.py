@@ -8,6 +8,7 @@ from models.enums import LicenseClass
 if TYPE_CHECKING:
     from models.user import User
     from models.trip import Trip
+    from models.linking_token import LinkingToken
 
 class Driver(SQLModel, table=True):
     __tablename__ = 'drivers'
@@ -26,6 +27,10 @@ class Driver(SQLModel, table=True):
 
     user: Optional['User'] = Relationship(back_populates='driver')
     trips: List['Trip'] = Relationship(
+        back_populates='driver',
+        sa_relationship_kwargs={'cascade': 'all, delete-orphan'}
+    )
+    linking_tokens: List['LinkingToken'] = Relationship(
         back_populates='driver',
         sa_relationship_kwargs={'cascade': 'all, delete-orphan'}
     )

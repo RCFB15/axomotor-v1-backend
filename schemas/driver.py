@@ -1,10 +1,11 @@
 from uuid import UUID
-from datetime import datetime, date
+from datetime import datetime, date, timedelta
 from typing import Optional
 
-from pydantic import Field
+from pydantic import Field, computed_field
 from sqlmodel import SQLModel
 
+from core.config import settings
 from models.enums import LicenseClass
 
 class DriverCreate(SQLModel):
@@ -35,3 +36,21 @@ class DriverResponse(SQLModel):
     updated_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
+
+class LinkCreateResponse(SQLModel):
+    token: str = Field(max_length=60)
+    created_at: datetime
+
+    @computed_field
+    @property
+    def expires_on(self) -> datetime:
+        return self.created_at + timedelta(minutes=settings.LINKING_TOKEN_EXPIRE_MINUTES)
+
+    @computed_field
+    @property
+    def url(self) -> str:
+        return f"https://t.me/{settings.TELEGRAM_BOT_USERNAME}?start={self.token}"
+
+class DriverLink(SQLModel):
+    token: str = Field(max_length=60)
+    telegram_user_id: int
