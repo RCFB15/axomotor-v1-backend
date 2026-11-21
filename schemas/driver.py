@@ -10,13 +10,13 @@ from models.enums import LicenseClass
 
 class DriverCreate(SQLModel):
     user_id: UUID
-    license_number: str = Field(max_length=20)
+    license_number: str = Field(min_length=8, max_length=20)
     license_class: LicenseClass
     license_iss_date: date
     license_exp_date: date
 
 class DriverUpdate(SQLModel):
-    license_number: Optional[str] = Field(default=None, max_length=20)
+    license_number: Optional[str] = Field(default=None, min_length=8, max_length=20)
     license_class: Optional[LicenseClass] = Field(default=None)
     license_iss_date: Optional[date] = Field(default=None)
     license_exp_date: Optional[date] = Field(default=None)
