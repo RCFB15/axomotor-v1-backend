@@ -44,3 +44,4 @@ Para realizar cambios en este repositorio es necesario crear un fork y una nueva
 ## Documentación
 
 - [Referencia de API](api/readme.md)
+- [Tipos de datos](schemas/readme.md)
