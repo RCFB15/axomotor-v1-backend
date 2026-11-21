@@ -1,7 +1,9 @@
 # AxoMotor API rest
 
 **Entorno:** Backend
+
 **Objetivo:** Acceso a la información del Sistema de Monitoreo de Vehículos en Tiempo Real
+
 **URL base:** /api/v1/
 
 ## Cómo consultar esta información
@@ -28,6 +30,7 @@ Referencias de emojis:
 ### Catalogo de códigos de eventos de vehículos
 
 **Endpoint:** `vehicle_event_codes/`
+
 **Métodos:** `GET`
 
 | Campo       | Tipo                          | Longitud | Único | Requerido | Actualizable | Descripción                                                         |
@@ -39,6 +42,7 @@ Referencias de emojis:
 ### Catalogo de códigos de incidencias
 
 **Endpoint:** `incident_codes/`
+
 **Métodos:** `GET`
 
 | Campo       | Tipo                          | Longitud | Único | Requerido | Actualizable | Descripción                                                               |
@@ -50,6 +54,7 @@ Referencias de emojis:
 ### Usuarios
 
 **Endpoint:** `users/`
+
 **Métodos:** `GET, POST, PUT, PATCH`
 
 | Campo           | Tipo                       | Longitud | Único | Requerido | Actualizable | Descripción                                                                                    |
@@ -70,6 +75,7 @@ Referencias de emojis:
 ### Ubicaciones conocidas
 
 **Endpoint:** `known_locations/`
+
 **Métodos:** `GET, POST, PUT, PATCH`
 
 | Campo         | Tipo                    | Longitud | Único | Requerido | Actualizable | Descripción                                                               |
@@ -77,13 +83,14 @@ Referencias de emojis:
 | location_id   | UUID                    |          | 🔑    | 🔑        | ❌            | Identificador de la ubicación.                                            |
 | name          | STRING                  | 1-60       | ❌     | ✅         | ✅            | Nombre de la ubicación.                                                   |
 | type          | STRING                  | 40       | ❌     | ❌         | ✅            | Tipo de la ubicación.                                                     |
-| address       | LONG TEXT               | 240      | ✅     | ✅         | ✅            | Dirección completa de la ubicación.                                       |
+| address       | LONG TEXT               | 240      | ❌     | ✅         | ✅            | Dirección completa de la ubicación.                                       |
 | location_area | GEOMETRY(Polygon, 4326) |          | ❌     | ✅         | ✅            | Polígono de la ubicación para usarla con Geocercas.                       |
 | registered_at | TIMESTAMP               |          | ❌     | 🚫        | ❌            | Fecha de registro de la ubicación. Por defecto es la fecha y hora actual. |
 
 ### Vehículos
 
 **Endpoint:** `vehicles/`
+
 **Métodos:** `GET, POST, PUT, PATCH`
 
 | Campo         | Tipo                                                                                               | Longitud | Único | Requerido | Actualizable | Descripción                                                                                                                                                                   |
@@ -91,12 +98,12 @@ Referencias de emojis:
 | vehicle_id    | UUID                                                                                               |          | 🔑    | 🔑        | ❌            | Identificador de vehículo.                                                                                                                                                    |
 | plate_number  | STRING                                                                                             | 8-12     | ✅     | ✅         | ✅            | Número de placas del vehículo.                                                                                                                                                |
 | reg_number    | STRING                                                                                             | 16-22    | ✅     | ✅         | ✅            | Número de registro de tarjeta de circulación del vehículo.                                                                                                                    |
-| series_vin    | STRING                                                                                             | 17       | ✅     | ✅         | ❌            | Número de serie del vehículo (VIN).                                                                                                                                           |
-| brand         | STRING                                                                                             | 60       | ❌     | ✅         | ❌            | Marca del vehículo.                                                                                                                                                           |
-| model         | STRING                                                                                             | 60       | ❌     | ✅         | ❌            | Modelo del vehículo.                                                                                                                                                          |
-| year          | INT                                                                                                |          | ❌     | ✅         | ❌            | Año del vehículo.                                                                                                                                                             |
-| type          | ENUM(PASSENGER_CAR, PICKUP, PANEL, VAN, BUS, TRUCK)                                                |          | ❌     | ✅         | ❌            | Tipo de vehículo. Puede ser: vehículo de pasajeros, camioneta, panel, van, autobus, camión.                                                                                   |
-| axes          | INT                                                                                                |          | ❌     | ✅         | ❌            | Número de ejes del vehículo. Por defecto: 2.                                                                                                                                  |
+| series_vin    | STRING                                                                                             | 17       | ✅     | ✅         | ✅            | Número de serie del vehículo (VIN).                                                                                                                                           |
+| brand         | STRING                                                                                             | 60       | ❌     | ✅         | ✅            | Marca del vehículo.                                                                                                                                                           |
+| model         | STRING                                                                                             | 60       | ❌     | ✅         | ✅            | Modelo del vehículo.                                                                                                                                                          |
+| year          | INT                                                                                                |          | ❌     | ✅         | ✅            | Año del vehículo.                                                                                                                                                             |
+| type          | ENUM(PASSENGER_CAR, PICKUP, PANEL, VAN, BUS, TRUCK)                                                |          | ❌     | ✅         | ✅            | Tipo de vehículo. Puede ser: vehículo de pasajeros, camioneta, panel, van, autobus, camión.                                                                                   |
+| axes          | INT                                                                                                |          | ❌     | ✅         | ✅            | Número de ejes del vehículo. Por defecto: 2.                                                                                                                                  |
 | status        | ENUM(OPERATIVE, IN_USE, OUT_OF_SERVICE, UNDER_MAINTENANCE, DOCUMENTS_EXPIRED, HELD_BY_AUTHORITIES) |          | ❌     | ❌         | ✅            | Estado actual del vehículo. Puede ser: operativo, en uso, fuera de servicio, en mantenimiento, documentación expirada o retenido por las autoridades. Por defecto: operativo. |
 | registered_at | TIMESTAMP                                                                                          |          | ❌     | 🚫        | ❌            | Marca de tiempo de registro del vehículo. Por defecto es la fecha y hora actual.                                                                                              |
 | updated_at    | TIMESTAMP                                                                                          |          | ❌     | 🚫        | ❌            | Marca de tiempo de actualización del vehículo. Por defecto es la fecha y hora actual.                                                                                         |
@@ -104,6 +111,7 @@ Referencias de emojis:
 ### Alertas de usuarios
 
 **Endpoint:** `user_alerts/`
+
 **Métodos:** `GET, PUT, DELETE`
 
 | Campo      | Tipo      | Longitud | Único | Requerido | Actualizable | Descripción                                                                                            |
@@ -119,6 +127,7 @@ Referencias de emojis:
 ### Conductores
 
 **Endpoint:** `drivers/`
+
 **Métodos:** `GET, POST, PUT, PATCH`
 
 | Campo            | Tipo                        | Longitud | Único | Requerido | Actualizable | Descripción                                                                                                                                           |
@@ -138,6 +147,7 @@ Referencias de emojis:
 ### Servicios a vehículos
 
 **Endpoint:** `vehicle_services/`
+
 **Métodos:** `GET, POST, PUT, PATCH`
 
 | Campo             | Tipo                                                        | Longitud | Único | Requerido | Actualizable | Descripción                                                                                                                                 |
@@ -155,12 +165,13 @@ Referencias de emojis:
 ### Dispositivos en vehículos
 
 **Endpoint:** `vehicle_devices/`
+
 **Métodos:** `GET, POST, PUT, PATCH`
 
 | Campo         | Tipo            | Longitud | Único | Requerido | Actualizable | Descripción                                                                                                                                                                                    |
 | ------------- | --------------- | -------- | ----- | --------- | ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | device_id     | UUID            |          | 🔑    | 🔑        | ❌            | Identificador único del dispositivo telemático.                                                                                                                                                |
-| vehicle_id    | UUID            |          | ❌     | ✅         | ❌            | Identificador del vehículo al que está asignado e instalado el dispositivo. Se relaciona con la columna vehicle_id de la tabla vehicles.                                                       |
+| vehicle_id    | UUID            |          | ❌     | ✅         | ✅            | Identificador del vehículo al que está asignado e instalado el dispositivo. Se relaciona con la columna vehicle_id de la tabla vehicles.                                                       |
 | serial_number | STRING          | 12       | ❌     | ✅         | ✅            | Número de serie de fabricación del dispositivo.                                                                                                                                                |
 | tag           | STRING          | 16       | ❌     | ✅         | ✅            | Etiqueta o identificador alfanumérico visible asignado al dispositivo.                                                                                                                         |
 | type          | ENUM(HUB, NODE) |          | ❌     | ✅         | ✅            | Tipo de dispositivo telemático o sensor instalado en el vehículo. Puede ser: hub (concentrador que procesa los datos de los sensores), node (dispositivo equipado con sensor, cámara o ambos). |
@@ -172,26 +183,28 @@ Referencias de emojis:
 ### Eventos de vehículos
 
 **Endpoint:** `vehicle_events/`
-**Métodos:** `GET`
+
+**Métodos:** `GET`, `POST`
 
 | Campo           | Tipo                   | Longitud | Único | Requerido | Actualizable | Descripción                                                                                                                                        |
 | --------------- | ---------------------- | -------- | ----- | --------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
 | event_id        | UUID                   |          | 🔑    | 🔑        | ❌            | Identificador de evento.                                                                                                                           |
-| code            | STRING                 | 12       | ❌     | ❌         | ❌            | Código identificador del tipo de evento generado por el dispositivo. Se relaciona con la columna code de la tabla vehicle_event_codes.             |
-| vehicle_id      | UUID                   |          | ❌     | ❌         | ❌            | Identificador del vehículo donde está instalado el dispositivo que produjo el evento. Se relaciona con la columna vehicle_id de la tabla vehicles. |
-| position        | GEOGRAPHY(Point, 4326) |          | ❌     | ❌         | ❌            | Coordenadas geográficas donde se originó el evento del vehículo.                                                                                   |
+| code            | STRING                 | 12       | ✅     | ❌         | ❌            | Código identificador del tipo de evento generado por el dispositivo. Se relaciona con la columna code de la tabla vehicle_event_codes.             |
+| vehicle_id      | UUID                   |          | ✅     | ❌         | ❌            | Identificador del vehículo donde está instalado el dispositivo que produjo el evento. Se relaciona con la columna vehicle_id de la tabla vehicles. |
+| position        | GEOGRAPHY(Point, 4326) |          | ✅     | ❌         | ❌            | Coordenadas geográficas donde se originó el evento del vehículo.                                                                                   |
 | additional_data | JSON                   |          | ❌     | ❌         | ❌            | Datos complementarios o métricas en formato JSON asociados al evento.                                                                              |
 | registered_at   | TIMESTAMP              |          | ❌     | 🚫        | ❌            | Marca de tiempo de registro del evento. Por defecto es la fecha y hora actual.                                                                     |
 
 ### Viajes
 
 **Endpoint:** `trips/`
+
 **Métodos:** `GET, POST, PUT, PATCH`
 
 | Campo          | Tipo                                                                                              | Longitud | Único | Requerido | Actualizable | Descripción                                                                                                                                                                            |
 | -------------- | ------------------------------------------------------------------------------------------------- | -------- | ----- | --------- | ------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | trip_id        | UUID                                                                                              |          | 🔑    | 🔑        | ❌            | Identificador único del viaje registrado.                                                                                                                                              |
-| vehicle_id     | UUID                                                                                              |          | ❌     | ✅         | ❌            | Identificador del vehículo asignado para realizar el viaje. Se relaciona con la columna vehicle_id de la tabla vehicles.                                                               |
+| vehicle_id     | UUID                                                                                              |          | ❌     | ✅         | ✅            | Identificador del vehículo asignado para realizar el viaje. Se relaciona con la columna vehicle_id de la tabla vehicles.                                                               |
 | driver_id      | UUID                                                                                              |          | ❌     | ✅         | ✅            | Identificador del conductor asignado para operar el viaje. Se relaciona con la columna driver_id de la tabla drivers.                                                                  |
 | origin_id      | UUID                                                                                              |          | ❌     | ✅         | ✅            | Identificador del lugar conocido configurado como punto de origen. Se relaciona con la columna location_id de la tabla known_locations.                                                |
 | destination_id | UUID                                                                                              |          | ❌     | ✅         | ✅            | Identificador del lugar conocido configurado como punto de destino. Se relaciona con la columna location_id de la tabla known_locations.                                               |
@@ -206,6 +219,7 @@ Referencias de emojis:
 ### Posiciones en viajes
 
 **Endpoint:** `trip_positions/`
+
 **Métodos:** `GET, POST`
 
 | Campo         | Tipo                   | Longitud | Único | Requerido | Actualizable | Descripción                                                                                                                 |
@@ -219,6 +233,7 @@ Referencias de emojis:
 ### Incidentes
 
 **Endpoint:** `incidents/`
+
 **Métodos:** `GET, POST, PUT, PATCH`
 
 | Campo               | Tipo                                       | Longitud | Único | Requerido | Actualizable | Descripción                                                                                                                                                              |
@@ -239,6 +254,7 @@ Referencias de emojis:
 ### Archivos multimedia de incidentes
 
 **Endpoint:** `incident_media/`
+
 **Métodos:** `GET, POST, DELETE`
 
 | Campo         | Tipo               | Longitud | Único | Requerido | Actualizable | Descripción                                                                                                                    |
