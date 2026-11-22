@@ -38,7 +38,7 @@ Referencias de emojis:
 - [KnownLocation](#knownlocation)
 - [KnownLocationSimple](#knownlocationsimple)
 - [Trip](#trip)
-- [TripPosition](#tripposition)
+- [Position](#position)
 - [IncidentCode](#incidentcode)
 - [Incident](#incident)
 - [IncidentMedia](#incidentmedia)
@@ -155,7 +155,8 @@ Representa un evento que produjo o detectó alguno de los dispositivos instalado
 | code            | STRING                 | 12       | ❌         | Código identificador del tipo de evento generado por el dispositivo.                   |
 | info            | [VehicleEventCode](#vehicleeventcode)                 |          | ❌         | Objeto con información acerca del código de evento.                   |
 | vehicle_id      | UUID                   |          | ❌         | Identificador del vehículo donde está instalado el dispositivo que produjo el evento.  |
-| position        | GEOGRAPHY(Point, 4326) |          | ❌         | Coordenadas geográficas donde se originó el evento del vehículo.                       |
+| latitude        | NUMERIC                |          | ✅         | Latitud donde se originó el evento del vehículo.                      |
+| longitude       | NUMERIC                |          | ✅         | Longitud donde se originó el evento del vehículo.                     |
 | additional_data | JSON                   |          | ✅         | Datos complementarios o métricas en formato JSON asociados al evento.                  |
 | registered_at   | DATETIME               |          | ❌         | Marca de tiempo de registro del evento.                                                |
 
@@ -223,15 +224,17 @@ Describe la información de un viaje.
 | started_at     | DATETIME                                                                                    |          | ✅    | Marca de tiempo real de inicio del viaje.                                                                                                              |
 | finished_at    | DATETIME                                                                                    |          | ✅    | Marca de tiempo real de finalización o cierre del viaje.                                                                                               |
 
-### TripPosition
+### Position
 
-Describe la posición GPS en un momento dado durante un viaje.
+Describe la posición GPS de un vehículo en un momento dado.
 
 | Campo         | Tipo                   | Longitud | Nulo | Descripción                                                          |
 | ------------- | ---------------------- | -------- | ---- | -------------------------------------------------------------------- |
 | position_id   | UUID                   |          | 🔑   | Identificador único del registro de posición.                        |
-| trip_id       | UUID                   |          | ❌    | Identificador del viaje al cual corresponde el registro de posición. |
-| position      | GEOGRAPHY(Point, 4326) |          | ❌    | Coordenadas geográficas registradas del vehículo en el trayecto.     |
+| vehicle_id    | UUID                   |          | ❌    | Identificador del vehículo que registro la posición. |
+| trip_id       | UUID                   |          | ✅    | Identificador del viaje al cual corresponde el registro de posición. |
+| latitude      | NUMERIC                |          | ❌    | Latitud registrada del vehículo en el trayecto.                      |
+| longitude     | NUMERIC                |          | ❌    | Longitud registrada del vehículo en el trayecto.                     |
 | speed         | NUMERIC                | 5,2      | ❌    | Velocidad instantánea registrada del vehículo en km/h.               |
 | registered_at | DATETIME               |          | ❌    | Marca de tiempo de captura de la posición.                           |
 
@@ -257,7 +260,8 @@ Describe la información acerca de un incidente producido durante un viaje.
 | code                | STRING                               | 12       | ❌    | Código de referencia del tipo de incidencia.                                                                            |
 | info                | [IncidentCode](#incidentcode)        |          | ❌    | Objeto con información acerca del tipo de incidencia.                                                                            |
 | status              | OPEN, IN_REVISION, CLOSED, DISCARDED |          | ❌    | Estado actual de atención o resolución de la incidencia. Puede ser: abierto, en revisión, cerrado, descartado. Por defecto: abierto. |
-| position            | GEOGRAPHY(Point, 4326)               |          | ❌    | Coordenadas geográficas donde ocurrió la incidencia.                                                                                 |
+| latitude            | NUMERIC                              |          | ✅    | Latitud donde ocurrió la incidencia.                      |
+| longitude           | NUMERIC                              |          | ✅    | Longitud donde ocurrió la incidencia.                     |
 | description         | LONGTEXT                             | 2-500    | ❌    | Descripción detallada de los hechos ocurridos en la incidencia.                                                                      |
 | comments            | LONGTEXT                             | 2-500    | ✅    | Comentarios u observaciones de seguimiento por parte del agente.                                                                     |
 | related_incident_id | UUID                                 |          | ✅    | Identificador de la incidencia vinculada o relacionada para dar seguimiento.                                                         |

@@ -1,6 +1,7 @@
 from typing import Optional, Any, Dict
 from uuid import UUID
 from datetime import datetime
+from decimal import Decimal
 
 from pydantic import Field
 from sqlmodel import SQLModel
@@ -32,7 +33,8 @@ class IncidentResponse(SQLModel):
     code: str = Field(max_length=12)
     priority: PriorityLevel
     status: IncidentStatus
-    position: Any
+    latitude: Optional[Decimal]
+    longitude: Optional[Decimal]
     description: str = Field(max_length=500)
     comments: Optional[str] = Field(default=None, max_length=500)
     related_incident_id: Optional[UUID]
@@ -43,6 +45,7 @@ class IncidentResponse(SQLModel):
     reviewed_by_id: Optional[UUID] = None
 
     info: IncidentCodeResponse
+    position: Any = Field(exclude=True)
 
     model_config = {"from_attributes": True}
 

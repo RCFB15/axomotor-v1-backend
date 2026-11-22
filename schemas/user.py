@@ -12,7 +12,12 @@ class UserCreate(SQLModel):
     last_name: str = Field(min_length=2, max_length=60)
     email: EmailStr = Field(max_length=120)
     username: str = Field(min_length=3, max_length=16)
-    phone_number: str = Field(max_length=16)
+    phone_number: str = Field(
+        max_length=16,
+        pattern=r"^\+\d{1,3} \d{3}-\d{3}-\d{3,4}$",
+        description="Format +00 000-000-0000",
+        examples=["+52 664-123-4567", "+1 619-123-4567"]
+    )
     password: str = Field(min_length=8, max_length=120)
     role: UserRole
 
@@ -21,7 +26,13 @@ class UserUpdate(SQLModel):
     last_name: Optional[str] = Field(default=None, min_length=2, max_length=60)
     email: Optional[EmailStr] = Field(default=None, max_length=120)
     username: Optional[str] = Field(default=None, min_length=3, max_length=16)
-    phone_number: Optional[str] = Field(default=None, max_length=16)
+    phone_number: Optional[str] = Field(
+        default=None,
+        max_length=16,
+        pattern=r"^\+\d{1,3} \d{3}-\d{3}-\d{3,4}$",
+        description="Format +00 000-000-0000",
+        examples=["+52 664-123-4567", "+1 619-123-4567"]
+    )
     is_enabled: Optional[bool] = None
 
 class UserUpdatePassword(SQLModel):
