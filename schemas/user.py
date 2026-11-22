@@ -9,7 +9,7 @@ from models.enums import UserRole
 
 class UserCreate(SQLModel):
     first_name: str = Field(min_length=2, max_length=60)
-    last_name: str = Field(min_length=2, max_length=60)
+    last_name: Optional[str] = Field(default=None, min_length=2, max_length=60)
     email: EmailStr = Field(max_length=120)
     username: str = Field(min_length=3, max_length=16)
     phone_number: str = Field(
@@ -42,7 +42,7 @@ class UserUpdatePassword(SQLModel):
 class UserResponse(SQLModel):
     user_id: UUID
     first_name: str = Field(min_length=2, max_length=60)
-    last_name: str = Field(min_length=2, max_length=60)
+    last_name: Optional[str] = Field(min_length=2, max_length=60)
     email: EmailStr = Field(max_length=120)
     username: str = Field(min_length=3, max_length=16)
     phone_number: str = Field(max_length=16)
