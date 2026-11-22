@@ -17,7 +17,7 @@ En este documento se describe la estructura de los tipos de datos (schemas) util
 Referencias de emojis:
 
 | Emoji | Descripción                                    |
-| ----- | -----------------------------------------------|
+| ----- | ---------------------------------------------- |
 | 🔑    | Identificador autogenerado.                    |
 | ✅    | El campo puede ser nulo.                       |
 | ❌    | El campo no puede ser nulo.                    |
@@ -27,6 +27,7 @@ Referencias de emojis:
 ---
 ## Contenido
 
+- [Token](#token)
 - [User](#user)
 - [UserAlert](#useralert)
 - [Driver](#driver)
@@ -46,6 +47,15 @@ Referencias de emojis:
 ---
 
 ## Tipos de datos
+
+### Token
+
+Contiene el token de acceso correspondiente a una sesión activa de un usuario.
+
+| Campo        | Tipo   | Longitud | Nulo | Descripción                         |
+| ------------ | ------ | -------- | ---- |------------------------------------ |
+| access_token | STRING |          | 🔑   | Cadena de token de acceso.          |
+| first_name   | STRING |          | ❌   | Tipo de token. Siempre es `bearer`. |
 
 ### User
 
@@ -198,7 +208,7 @@ Representa un resumen de una ubicación conocida que puede utilizarse como punto
 | ------------- | ----------------------- | -------- | ---- | --------------------------------------------------- |
 | name          | STRING                  | 1-60     | ❌    | Nombre de la ubicación.                             |
 | type          | STRING                  | 40       | ❌    | Tipo de la ubicación.                               |
-| location_area | GEOMETRY(Polygon, 4326) |          | ❌    | Polígono de la ubicación para usarla con Geocercas. |
+| address       | LONG TEXT               | 240      | ❌    | Dirección completa de la ubicación.                 |
 
 ### Trip
 
