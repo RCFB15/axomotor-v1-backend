@@ -15,6 +15,8 @@ class VehicleService(SQLModel, table=True):
 
     service_id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     vehicle_id: uuid.UUID = Field(foreign_key='vehicles.vehicle_id', index=True)
+    name: str = Field(max_length=60)
+    description: Optional[str] = Field(default=None, max_length=500)
     status: VehicleServiceStatus = Field(default=VehicleServiceStatus.pending)
     date: datetime
     next_service_date: Optional[datetime] = None
