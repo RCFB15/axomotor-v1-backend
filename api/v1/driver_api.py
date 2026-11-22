@@ -2,12 +2,18 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import IntegrityError
+from sqlalchemy.orm import joinedload
 from sqlmodel import Session, select
 
 from api.v1.dependencies import get_current_user
 from db.database import get_session
 from models import Driver, User, UserRole
-from schemas.driver import DriverCreate, DriverUpdate, DriverResponse, DriverLink, LinkCreateResponse
+from schemas.driver import (
+    DriverCreate,
+    DriverUpdate,
+    DriverResponse,
+    DriverResponseExtended
+)
 
 router = APIRouter()
 
@@ -72,13 +78,19 @@ def get_drivers(
 ) -> list[Driver]:
     return list(session.exec(select(Driver)).all())
 
-@router.get("/{driver_id}", response_model=DriverResponse)
+@router.get("/{driver_id}", response_model=DriverResponseExtended)
 def get_driver(
     driver_id: UUID,
     session: Session = Depends(get_session),
     _current_user: User = Depends(get_current_user),
 ) -> Driver:
-    driver = session.get(Driver, driver_id)
+    statement = (
+        select(Driver)
+            .where(Driver.driver_id == driver_id)
+            .options(joinedload(Driver.user))
+    )
+
+    driver = session.exec(statement).first()
 
     if driver is None:
         raise HTTPException(

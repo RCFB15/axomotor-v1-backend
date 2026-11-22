@@ -5,6 +5,8 @@ from datetime import datetime
 from pydantic import Field
 from sqlmodel import SQLModel
 
+from schemas.vehicle_event_code import VehicleEventCodeResponse
+
 class VehicleEventCreate(SQLModel):
     code: str = Field(max_length=12)
     vehicle_id: UUID
@@ -18,5 +20,7 @@ class VehicleEventResponse(SQLModel):
     position: Any
     additional_data: Optional[Dict[str, Any]] = None
     registered_at: datetime
+
+    info: VehicleEventCodeResponse
 
     model_config = {"from_attributes": True}

@@ -6,6 +6,9 @@ from pydantic import Field
 from sqlmodel import SQLModel
 
 from models.enums import IncidentStatus, PriorityLevel
+from schemas.incident_code import IncidentCodeResponse
+from schemas.user import UserResponse
+from schemas.trip import TripResponse
 
 class IncidentCreate(SQLModel):
     trip_id: UUID
@@ -39,4 +42,11 @@ class IncidentResponse(SQLModel):
     created_by_id: Optional[UUID] = None
     reviewed_by_id: Optional[UUID] = None
 
+    info: IncidentCodeResponse
+
     model_config = {"from_attributes": True}
+
+class IncidentResponseExtended(IncidentResponse):
+    trip: TripResponse
+    created_by: Optional[UserResponse]
+    reviewed_by: Optional[UserResponse]

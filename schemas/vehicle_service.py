@@ -6,6 +6,7 @@ from pydantic import Field
 from sqlmodel import SQLModel
 
 from models.enums import VehicleServiceStatus
+from schemas.user import UserResponse
 
 class VehicleServiceCreate(SQLModel):
     vehicle_id: UUID
@@ -30,3 +31,7 @@ class VehicleServiceResponse(SQLModel):
     authorized_by_id: Optional[UUID] = None
 
     model_config = {"from_attributes": True}
+
+class VehicleServiceResponseExtended(VehicleServiceResponse):
+    created_by: UserResponse
+    authorized_by: Optional[UserResponse]

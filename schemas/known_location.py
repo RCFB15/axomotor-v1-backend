@@ -25,3 +25,10 @@ class KnownLocationResponse(SQLModel):
     registered_at: datetime
 
     model_config = {"from_attributes": True}
+
+class KnownLocationResponseSimple(SQLModel):
+    name: str = Field(max_length=60)
+    type: Optional[str] = Field(default=None, max_length=40)
+    address: str = Field(max_length=240)
+
+    model_config = {"from_attributes": True}
