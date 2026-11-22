@@ -16,7 +16,7 @@ class VehicleEvent(SQLModel, table=True):
     vehicle_id: uuid.UUID = Field(foreign_key='vehicles.vehicle_id', index=True)
     code: str = Field(foreign_key='vehicle_event_codes.code', index=True, max_length=12)
     # Se usa sa_column para definir el tipo espacial de PostGIS
-    position: Any = Field(sa_column=Column(Geography('POINT', srid=4326)))
+    position: Optional[Any] = Field(default=None, sa_column=Column(Geography('POINT', srid=4326)))
     additional_data: Optional[dict] = Field(default=None, sa_column=Column(JSON))
     registered_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 

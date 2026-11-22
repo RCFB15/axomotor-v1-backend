@@ -10,7 +10,7 @@ if TYPE_CHECKING:
     from models.vehicle import Vehicle
     from models.driver import Driver
     from models.known_location import KnownLocation
-    from models.trip_position import TripPosition
+    from models.position import Position
     from models.incident import Incident
 
 class Trip(SQLModel, table=True):
@@ -40,7 +40,7 @@ class Trip(SQLModel, table=True):
         back_populates='trip_destinations',
         sa_relationship_kwargs={'foreign_keys': '[Trip.destination_id]'}
     )
-    positions: List['TripPosition'] = Relationship(
+    positions: List['Position'] = Relationship(
         back_populates='trip',
         sa_relationship_kwargs={'cascade': 'all, delete-orphan'}
     )

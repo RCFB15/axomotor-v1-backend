@@ -17,19 +17,19 @@ class Incident(SQLModel, table=True):
 
     incident_id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     trip_id: uuid.UUID = Field(foreign_key='trips.trip_id', index=True)
-    created_by_id: Optional[uuid.UUID] = Field(default=None, foreign_key='users.user_id', index=True)
-    reviewed_by_id: Optional[uuid.UUID] = Field(default=None, foreign_key='users.user_id', index=True)
-    related_incident_id: Optional[uuid.UUID] = Field(default=None, foreign_key='incidents.incident_id', index=True)
     code: str = Field(foreign_key='incident_codes.code', max_length=12)
     priority: PriorityLevel = Field(default=PriorityLevel.medium)
     status: IncidentStatus = Field(default=IncidentStatus.open)
     # Se usa sa_column para definir el tipo espacial de PostGIS
-    position: Any = Field(sa_column=Column(Geography('POINT', srid=4326)))
+    position: Optional[Any] = Field(default=None, sa_column=Column(Geography('POINT', srid=4326)))
     description: str = Field(min_length=2, max_length=500)
     comments: Optional[str] = Field(min_length=2, max_length=500)
+    related_incident_id: Optional[uuid.UUID] = Field(default=None, foreign_key='incidents.incident_id', index=True)
     registered_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     reviewed_at: Optional[datetime] = None
     closed_at: Optional[datetime] = None
+    created_by_id: Optional[uuid.UUID] = Field(default=None, foreign_key='users.user_id', index=True)
+    reviewed_by_id: Optional[uuid.UUID] = Field(default=None, foreign_key='users.user_id', index=True)
 
     related_incident: Optional[Incident] = Relationship(
         back_populates='subsequent_incident',

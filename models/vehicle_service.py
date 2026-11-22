@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime, date, timezone
 from typing import Optional, TYPE_CHECKING
 
+import sqlalchemy as sa
 from sqlmodel import SQLModel, Field, Relationship
 from models.enums import VehicleServiceStatus
 
@@ -20,7 +21,13 @@ class VehicleService(SQLModel, table=True):
     created_by_id: uuid.UUID = Field(foreign_key='users.user_id', index=True)
     authorized_by_id: Optional[uuid.UUID] = Field(default=None, foreign_key='users.user_id', index=True)
     registered_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    updated_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = Field(
+        default=None,
+        sa_column_kwargs={
+            'onupdate': sa.func.now(),
+            'server_default': sa.func.now(),
+        }
+    )
 
     vehicle: Optional['Vehicle'] = Relationship(back_populates='services')
     created_by: Optional['User'] = Relationship(

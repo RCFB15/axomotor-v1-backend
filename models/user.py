@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 from typing import Optional, List, TYPE_CHECKING
 from pydantic import EmailStr
 
+import sqlalchemy as sa
 from sqlmodel import SQLModel, Field, Relationship
 from models.enums import UserRole
 
@@ -17,7 +18,7 @@ class User(SQLModel, table=True):
 
     user_id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     first_name: str = Field(index=True, min_length=2, max_length=60)
-    last_name: str = Field(index=True, min_length=2, max_length=60)
+    last_name: Optional[str] = Field(default=None, index=True, min_length=2, max_length=60)
     email: EmailStr = Field(index=True, unique=True, max_length=120)
     username: str = Field(index=True, unique=True, min_length=3, max_length=16)
     phone_number: str = Field(index=True, unique=True, max_length=16)
@@ -25,7 +26,13 @@ class User(SQLModel, table=True):
     role: UserRole
     is_enabled: bool = Field(default=True)
     registered_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    updated_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = Field(
+        default=None,
+        sa_column_kwargs={
+            'onupdate': sa.func.now(),
+            'server_default': sa.func.now(),
+        }
+    )
     logged_in_at: Optional[datetime] = None
 
     driver: Optional['Driver'] = Relationship(
