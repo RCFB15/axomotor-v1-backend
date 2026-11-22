@@ -135,6 +135,8 @@ Representa un servicio de mantenimiento dado a un vehículo.
 | ----------------- | ----------------------------------------------------- | -------- | ---- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | service_id        | UUID                                                  |          | 🔑   | Identificador de servicio.                                                                                                                 |
 | vehicle_id        | UUID                                                  |          | 🟢    | Identificador del vehículo.                                                                                                                |
+| name              | String                                                | 60       | 🟢    | Nombre del servicio. |
+| description       | String                                                | 500      | 🟡    | Descripción del servicio |
 | status            | PENDING, IN_PROGRESS, COMPLETED, CANCELLED, DISCARDED |          | 🟢    | Estado actual del servicio de mantenimiento. Puede ser: pendiente, en progreso, completado, cancelado, descartado. Por defecto: pendiente. |
 | Date              | DateTime                                              |          | 🟢    | Fecha y hora en que se realiza el servicio de mantenimiento.                                                                               |
 | next_service_date | DateTime                                              |          | 🟢    | Fecha y hora estimada para el siguiente servicio de mantenimiento.                                                                         |
