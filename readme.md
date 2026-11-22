@@ -43,5 +43,6 @@ Para realizar cambios en este repositorio es necesario crear un fork y una nueva
 
 ## Documentación
 
+- [Modelos DB](models/readme.md)
 - [Referencia de API](api/readme.md)
-- [Tipos de datos](schemas/readme.md)
+- [Tipos de datos (schemas)](schemas/readme.md)
