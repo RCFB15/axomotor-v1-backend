@@ -5,7 +5,7 @@ from decimal import Decimal
 
 from geoalchemy2.shape import to_shape
 from shapely.geometry import mapping
-from pydantic import Field, model_validator, computed_field, field_validator
+from pydantic import Field, model_validator, computed_field
 from sqlmodel import SQLModel
 
 from schemas.vehicle_event_code import VehicleEventCodeResponse
