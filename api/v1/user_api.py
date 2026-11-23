@@ -50,6 +50,13 @@ def login_for_access_token(
     )
     return Token(access_token=access_token)
 
+@router.get("/me", response_model=UserResponse)
+def get_logged_user(
+    session: Session = Depends(get_session),
+    current_user: User = Depends(get_current_user),
+) -> User:
+    return current_user
+
 @router.post(
     "/",
     response_model=UserResponse,

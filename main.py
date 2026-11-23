@@ -8,6 +8,8 @@ from api.v1 import (
     users_router,
     drivers_router,
     link_router,
+    vehicles_router,
+    locations_router,
 )
 
 from core.config import settings
@@ -30,6 +32,8 @@ app.add_middleware(
 
 app.include_router(users_router, prefix='/api/v1/users', tags=['Users'])
 app.include_router(drivers_router, prefix='/api/v1/drivers', tags=['Drivers'])
+app.include_router(vehicles_router, prefix='/api/v1/vehicles', tags=['Vehicles'])
+app.include_router(locations_router, prefix='/api/v1/locations', tags=['Known locations'])
 app.include_router(link_router, prefix='/api/v1/link_bot', tags=['Link Telegram Bot'])
 
 @app.get('/health', tags=['Health'])

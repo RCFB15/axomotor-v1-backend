@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime, date, timezone
 from typing import Optional, List, TYPE_CHECKING
 
+import sqlalchemy as sa
 from sqlmodel import SQLModel, Field, Relationship
 from models.enums import LicenseClass
 
@@ -23,7 +24,13 @@ class Driver(SQLModel, table=True):
     is_active: bool = Field(default=False)
     is_enabled: bool = Field(default=True)
     registered_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    updated_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = Field(
+        default=None,
+        sa_column_kwargs={
+            'onupdate': sa.func.now(),
+            'server_default': sa.func.now(),
+        }
+    )
 
     user: Optional['User'] = Relationship(back_populates='driver')
     trips: List['Trip'] = Relationship(

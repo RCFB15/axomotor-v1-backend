@@ -1,6 +1,6 @@
 import uuid
 from datetime import datetime, timezone
-from typing import Optional, List, TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 from sqlmodel import SQLModel, Field, Relationship, Column, JSON
 from models.enums import MediaType
@@ -13,7 +13,7 @@ class IncidentMedia(SQLModel, table=True):
 
     media_id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     incident_id: uuid.UUID = Field(foreign_key='incidents.incident_id', index=True)
-    file_url: str = Field(max_length=240)
+    file_url: str
     type: MediaType
     file_metadata: dict = Field(default=None, sa_column=Column(JSON))
     captured_at: datetime

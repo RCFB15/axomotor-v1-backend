@@ -7,6 +7,7 @@ from sqlmodel import SQLModel
 
 from core.config import settings
 from models.enums import LicenseClass
+from schemas.user import UserResponse
 
 class DriverCreate(SQLModel):
     user_id: UUID
@@ -36,6 +37,9 @@ class DriverResponse(SQLModel):
     updated_at: Optional[datetime] = None
 
     model_config = {"from_attributes": True}
+
+class DriverResponseExtended(DriverResponse):
+    user: UserResponse
 
 class LinkCreateResponse(SQLModel):
     token: str = Field(max_length=60)

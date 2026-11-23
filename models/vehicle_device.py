@@ -2,6 +2,7 @@ import uuid
 from datetime import datetime, timezone
 from typing import Optional, TYPE_CHECKING
 
+import sqlalchemy as sa
 from sqlmodel import SQLModel, Field, Relationship
 from models.enums import VehicleDeviceType
 
@@ -20,6 +21,12 @@ class VehicleDevice(SQLModel, table=True):
     is_active: bool
     is_enabled: bool = Field(default=True)
     registered_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    updated_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = Field(
+        default=None,
+        sa_column_kwargs={
+            'onupdate': sa.func.now(),
+            'server_default': sa.func.now(),
+        }
+    )
 
     vehicle: Optional['Vehicle'] = Relationship(back_populates='devices')
