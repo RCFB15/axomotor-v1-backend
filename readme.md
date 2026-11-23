@@ -19,7 +19,7 @@ AxoMotor es un sistema de monitoreo vehicular que protege el automóvil de robos
 1. Clonar este repositorio `git clone https://github.com/ddiazcts293/axomotor-v1-backend.git`.
 2. Inicializar un nuevo entorno virtual de Python en el directorio del proyecto `python -m venv .venv` (usar `py` en Windows).
 3. Instalar dependencias `pip install -r requirements.txt`.
-4. Crear una copia de `template.env` llamada `.env` y establecer la configuración del entorno.
+4. Crear una copia de `template.env` llamada `.env` y establecer la configuración del entorno. Se puede utilizar [RandomKeygen](https://randomkeygen.com/) para generar los valores de API Keys y JWT Secrets.
 5. Levantar contendores con Docker `docker compose up -d`.
 6. Aplicar migraciones con `alembic upgrade head`.
 7. Iniciar servidor API rest con `fastapi dev`.
