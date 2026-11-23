@@ -31,11 +31,11 @@ class Incident(SQLModel, table=True):
     created_by_id: Optional[uuid.UUID] = Field(default=None, foreign_key='users.user_id', index=True)
     reviewed_by_id: Optional[uuid.UUID] = Field(default=None, foreign_key='users.user_id', index=True)
 
-    related_incident: Optional[Incident] = Relationship(
+    related_incident: Optional['Incident'] = Relationship(
         back_populates='subsequent_incident',
         sa_relationship_kwargs={'remote_side': '[Incident.incident_id]'}
     )
-    subsequent_incident: Optional[Incident] = Relationship(
+    subsequent_incident: Optional['Incident'] = Relationship(
         back_populates='related_incident'
     )
     trip: Optional['Trip'] = Relationship(back_populates='incidents')
