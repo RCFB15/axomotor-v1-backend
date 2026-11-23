@@ -23,7 +23,7 @@ class Incident(SQLModel, table=True):
     # Se usa sa_column para definir el tipo espacial de PostGIS
     position: Optional[Any] = Field(default=None, sa_column=Column(Geography('POINT', srid=4326)))
     description: str = Field(min_length=2, max_length=500)
-    comments: Optional[str] = Field(min_length=2, max_length=500)
+    comments: Optional[str] = Field(default=None, min_length=2, max_length=500)
     related_incident_id: Optional[uuid.UUID] = Field(default=None, foreign_key='incidents.incident_id', index=True)
     registered_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     reviewed_at: Optional[datetime] = None
