@@ -165,10 +165,9 @@ Representa un evento que produjo o detectó alguno de los dispositivos instalado
 | --------------- | ---------------------- | -------- | --------- | -------------------------------------------------------------------------------------- |
 | event_id        | UUID                   |          | 🔑        | Identificador de evento.                                                               |
 | code            | String                 | 12       | 🟢         | Código identificador del tipo de evento generado por el dispositivo.                   |
-| info            | [VehicleEventCode](#vehicleeventcode)                 |          | 🟢         | Objeto con información acerca del código de evento.                   |
 | vehicle_id      | UUID                   |          | 🟢         | Identificador del vehículo donde está instalado el dispositivo que produjo el evento.  |
-| latitude        | Decimal                |          | 🟡         | Latitud donde se originó el evento del vehículo.                      |
-| longitude       | Decimal                |          | 🟡         | Longitud donde se originó el evento del vehículo.                     |
+| info            | [VehicleEventCode](#vehicleeventcode)                 |          | 🟢         | Objeto con información acerca del código de evento.                   |
+| geojson         | [GeoJSON](https://www.rfc-editor.org/info/rfc7946/#appendix-A.1) |          | 🟡         | Objeto GeoJSON de tipo `Point` con las coordenadas del lugar donde se originó el evento del vehículo. |
 | additional_data | JSON                   |          | 🟡         | Datos complementarios o métricas en formato JSON asociados al evento.                  |
 | registered_at   | DateTime               |          | 🟢         | Marca de tiempo de registro del evento.                                                |
 
@@ -199,7 +198,7 @@ Representa una ubicación conocida que puede utilizarse como punto de origen o d
 | name          | String                  | 1-60     | 🟢    | Nombre de la ubicación.                             |
 | type          | String                  | 40       | 🟢    | Tipo de la ubicación.                               |
 | address       | String                  | 240      | 🟢    | Dirección completa de la ubicación.                 |
-| location_area | GEOMETRY(Polygon, 4326) |          | 🟢    | Polígono de la ubicación para usarla con Geocercas. |
+| geojson       | [GeoJSON](https://www.rfc-editor.org/info/rfc7946/#appendix-A.3) |          | 🟢         | Objeto GeoJSON de tipo `Polygon` con un arreglo de los vertices del área del polígono. |
 | registered_at | DateTime                |          | 🟢    | Fecha de registro de la ubicación.                  |
 
 ### KnownLocationSimple
@@ -245,8 +244,7 @@ Describe la posición GPS de un vehículo en un momento dado.
 | position_id   | UUID                   |          | 🔑   | Identificador único del registro de posición.                        |
 | vehicle_id    | UUID                   |          | 🟢    | Identificador del vehículo que registro la posición. |
 | trip_id       | UUID                   |          | 🟡    | Identificador del viaje al cual corresponde el registro de posición. |
-| latitude      | Decimal                |          | 🟢    | Latitud registrada del vehículo en el trayecto.                      |
-| longitude     | Decimal                |          | 🟢    | Longitud registrada del vehículo en el trayecto.                     |
+| geojson         | [GeoJSON](https://www.rfc-editor.org/info/rfc7946/#appendix-A.1) |          | 🟢         | Objeto GeoJSON de tipo `Point` con las coordenadas longitud y latitud registradas. |
 | speed         | Decimal                | 5,2      | 🟢    | Velocidad instantánea registrada del vehículo en km/h.               |
 | registered_at | DateTime               |          | 🟢    | Marca de tiempo de captura de la posición.                           |
 
@@ -272,8 +270,7 @@ Describe la información acerca de un incidente producido durante un viaje.
 | code                | String                               | 12       | 🟢    | Código de referencia del tipo de incidencia.                                                                            |
 | info                | [IncidentCode](#incidentcode)        |          | 🟢    | Objeto con información acerca del tipo de incidencia.                                                                            |
 | status              | OPEN, IN_REVISION, CLOSED, DISCARDED |          | 🟢    | Estado actual de atención o resolución de la incidencia. Puede ser: abierto, en revisión, cerrado, descartado. Por defecto: abierto. |
-| latitude            | Decimal                              |          | 🟡    | Latitud donde ocurrió la incidencia.                      |
-| longitude           | Decimal                              |          | 🟡    | Longitud donde ocurrió la incidencia.                     |
+| geojson         | [GeoJSON](https://www.rfc-editor.org/info/rfc7946/#appendix-A.1) |          | 🟡         | Objeto GeoJSON de tipo `Point` con las coordenadas del último lugar conocido donde se originó la incidencia. |
 | description         | String                             | 2-500    | 🟢    | Descripción detallada de los hechos ocurridos en la incidencia.                                                                      |
 | comments            | String                             | 2-500    | 🟡    | Comentarios u observaciones de seguimiento por parte del agente.                                                                     |
 | related_incident_id | UUID                                 |          | 🟡    | Identificador de la incidencia vinculada o relacionada para dar seguimiento.                                                         |

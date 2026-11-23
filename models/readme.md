@@ -16,33 +16,20 @@ En este documento se describe la estructura de los modelos de datos utilizados p
 
 ## Contenido
 
-[users](#users)
-
-[user_alerts](#user_alerts)
-
-[drivers](#drivers)
-
-[vehicles](#vehicles)
-
-[vehicle_services](#vehicle_services)
-
-[vehicle_event_codes](#vehicle_event_codes)
-
-[vehicle_events](#vehicle_events)
-
-[vehicle_devices](#vehicle_devices)
-
-[known_locations](#known_locations)
-
-[trips](#trips)
-
-[positions](#positions)
-
-[incident_codes](#incident_codes)
-
-[incidents](#incidents)
-
-[incident_media](#incident_media)
+- [users](#users)
+- [user_alerts](#user_alerts)
+- [drivers](#drivers)
+- [vehicles](#vehicles)
+- [vehicle_services](#vehicle_services)
+- [vehicle_event_codes](#vehicle_event_codes)
+- [vehicle_events](#vehicle_events)
+- [vehicle_devices](#vehicle_devices)
+- [known_locations](#known_locations)
+- [trips](#trips)
+- [positions](#positions)
+- [incident_codes](#incident_codes)
+- [incidents](#incidents)
+- [incident_media](#incident_media)
 
 ## Tablas
 
