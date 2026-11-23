@@ -5,7 +5,23 @@ from typing import Optional, Any, Dict
 import json
 
 from sqlmodel import SQLModel
-from pydantic import field_validator
+from pydantic import Field, field_validator, model_validator, computed_field
+
+class PositionCreateBase(SQLModel):
+    latitude: Optional[Decimal] = Field(default=None, ge=-90.0, le=90.0)
+    longitude: Optional[Decimal] = Field(default=None, ge=-180.0, le=180.0)
+
+    @model_validator(mode="after")
+    def validate_coordinates(self) -> "PositionCreateBase":
+        if ([self.latitude, self.longitude].count(None) == 1) or \
+            (self.latitude == 0.0 and self.longitude == 0.0):
+            raise ValueError("Invalid GPS coordinates")
+        return self
+
+    @computed_field
+    @property
+    def has_position(self) -> bool:
+        return self.latitude is not None and self.longitude is not None
 
 class PositionResponse(SQLModel):
     position_id: UUID

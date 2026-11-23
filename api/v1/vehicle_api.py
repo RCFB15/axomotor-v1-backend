@@ -8,7 +8,7 @@ from sqlmodel import Session, select, col
 from geoalchemy2 import Geometry
 from geoalchemy2.elements import WKTElement
 
-from api.v1.dependencies import get_current_user
+from api.v1.dependencies import get_current_user, verify_mqtt_consumer
 from db.database import get_session
 from models import Vehicle, User, Position, VehicleEvent, VehicleEventCode
 from schemas.vehicle import VehicleCreate, VehicleUpdate, VehicleResponse
@@ -176,12 +176,15 @@ def get_events(
             .order_by(col(VehicleEvent.registered_at).desc())
     ).all())
 
-@router.post("/{vehicle_id}/events", status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/{vehicle_id}/events",
+    status_code=status.HTTP_201_CREATED,
+    dependencies=[Depends(verify_mqtt_consumer)]
+)
 def create_event(
     vehicle_id: UUID,
     event_data: VehicleEventCreate,
     session: Session = Depends(get_session),
-    _current_user: User = Depends(get_current_user),
 ):
     vehicle = session.get(Vehicle, vehicle_id)
 

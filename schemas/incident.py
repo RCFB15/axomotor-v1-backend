@@ -1,19 +1,19 @@
 from typing import Optional, Any, Dict
 from uuid import UUID
 from datetime import datetime
-from decimal import Decimal
 
 from geoalchemy2.shape import to_shape
 from shapely.geometry import mapping
-from pydantic import Field, model_validator, computed_field
+from pydantic import Field, computed_field
 from sqlmodel import SQLModel
 
 from models.enums import IncidentStatus, PriorityLevel
+from schemas.position import PositionCreateBase
 from schemas.incident_code import IncidentCodeResponse
 from schemas.user import UserResponse
 from schemas.trip import TripResponse
 
-class IncidentCreate(SQLModel):
+class IncidentCreate(PositionCreateBase):
     trip_id: UUID
     code: str = Field(max_length=12)
     status: Optional[IncidentStatus] = Field(default=IncidentStatus.open)
