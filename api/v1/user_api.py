@@ -1,17 +1,18 @@
 from datetime import timedelta
-from typing import Annotated
+from typing import Annotated, Optional
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.exc import IntegrityError
 from sqlmodel import Session, select
 
+from api.v1.common import PaginationDep, paginate
 from api.v1.dependencies import get_current_user
 from core.config import settings
 from core.security import create_access_token, get_password_hash, verify_password
 from db.database import get_session
-from models.user import User
+from models import User, UserRole
 from schemas.token import Token
 from schemas.user import UserCreate, UserResponse, UserUpdate, UserUpdatePassword
 
@@ -106,10 +107,21 @@ def register_user(
 
 @router.get("/", response_model=list[UserResponse])
 def get_users(
+    response: Response,
+    page: PaginationDep,
+    role: Optional[UserRole] = None,
+    is_enabled: Optional[bool] = None,
     session: Session = Depends(get_session),
     _current_user: User = Depends(get_current_user),
 ) -> list[User]:
-    return list(session.exec(select(User)).all())
+    statement = select(User)
+
+    if role is not None:
+        statement = statement.where(User.role == role)
+    if is_enabled is not None:
+        statement = statement.where(User.is_enabled == is_enabled)
+
+    return paginate(session, statement, page, response)
 
 @router.get("/{user_id}", response_model=UserResponse)
 def get_user(

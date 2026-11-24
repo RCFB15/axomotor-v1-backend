@@ -1,13 +1,20 @@
 from uuid import UUID
+from typing import Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status
-from sqlalchemy.exc import IntegrityError
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.orm import joinedload
 from sqlmodel import Session, select
 
+from api.v1.common import (
+    PaginationDep,
+    apply_update,
+    commit_or_409,
+    get_or_404,
+    paginate
+)
 from api.v1.dependencies import get_current_user
 from db.database import get_session
-from models import Driver, User, UserRole
+from models import Driver, User, UserRole, LicenseClass
 from schemas.driver import (
     DriverCreate,
     DriverUpdate,
@@ -16,6 +23,8 @@ from schemas.driver import (
 )
 
 router = APIRouter()
+
+CONFLICT_DETAIL = "The driver could not be saved due to a conflicting or invalid reference"
 
 @router.post(
     "/",
@@ -27,56 +36,44 @@ def register_driver(
     session: Session = Depends(get_session),
     _current_user: User = Depends(get_current_user),
 ) -> Driver:
-    user = session.get(User, driver_data.user_id)
-    if user is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="User not found",
-        )
-    elif user.role != UserRole.driver:
+    user = get_or_404(session, User, driver_data.user_id, "User")
+    if user.role != UserRole.driver:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="User must be registered as driver",
         )
 
-    existing_driver = session.exec(
-        select(Driver).where(Driver.user_id == driver_data.user_id)
-    ).first()
-
-    if existing_driver:
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="User already registered as driver",
-        )
-
-    driver = Driver(
-        user_id = driver_data.user_id,
-        license_number = driver_data.license_number,
-        license_class = driver_data.license_class,
-        license_iss_date = driver_data.license_iss_date,
-        license_exp_date = driver_data.license_exp_date
-    )
+    data = driver_data.model_dump(exclude_none=True)
+    driver = Driver(**data)
 
     session.add(driver)
-
-    try:
-        session.commit()
-    except IntegrityError as e:
-        session.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="There is already another driver registered with the same information",
-        ) from None
-
+    commit_or_409(session, CONFLICT_DETAIL)
     session.refresh(driver)
     return driver
 
 @router.get("/", response_model=list[DriverResponse])
 def get_drivers(
+    response: Response,
+    page: PaginationDep,
+    user_id: Optional[UUID] = None,
+    license_class: Optional[LicenseClass] = None,
+    is_active: Optional[bool] = None,
+    is_enabled: Optional[bool] = None,
     session: Session = Depends(get_session),
     _current_user: User = Depends(get_current_user),
 ) -> list[Driver]:
-    return list(session.exec(select(Driver)).all())
+    statement = select(Driver)
+
+    if user_id is not None:
+        statement = statement.where(Driver.user_id == user_id)
+    if license_class is not None:
+        statement = statement.where(Driver.license_class == license_class)
+    if is_active is not None:
+        statement = statement.where(Driver.is_active == is_active)
+    if is_enabled is not None:
+        statement = statement.where(Driver.is_enabled == is_enabled)
+
+    return paginate(session, statement, page, response)
 
 @router.get("/{driver_id}", response_model=DriverResponseExtended)
 def get_driver(
@@ -87,7 +84,7 @@ def get_driver(
     statement = (
         select(Driver)
             .where(Driver.driver_id == driver_id)
-            .options(joinedload(Driver.user))
+            .options(joinedload(Driver.user))  # type: ignore
     )
 
     driver = session.exec(statement).first()
@@ -106,33 +103,10 @@ def update_driver(
     session: Session = Depends(get_session),
     _current_user: User = Depends(get_current_user),
 ) -> Driver:
-    driver = session.get(Driver, driver_id)
-    if driver is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Driver not found",
-        )
+    driver = get_or_404(session, Driver, driver_id, "Driver")
 
-    update_data = driver_data.model_dump(exclude_unset=True)
-    if any(value is None for value in update_data.values()):
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="All fields cannot be null or empty",
-        )
-
-    for field, value in update_data.items():
-        setattr(driver, field, value)
-
+    apply_update(driver, driver_data)
     session.add(driver)
-
-    try:
-        session.commit()
-    except IntegrityError:
-        session.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="There is already another driver registered with the same information",
-        ) from None
-
+    commit_or_409(session, CONFLICT_DETAIL)
     session.refresh(driver)
     return driver
