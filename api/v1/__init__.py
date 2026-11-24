@@ -9,3 +9,4 @@ from .vehicle_device_api import router as vehicle_devices_router
 from .vehicle_service_api import router as vehicle_services_router
 from .trip_api import router as trips_router
 from .incident_api import router as incidents_router
+from .traking_api import router as positions_router

@@ -18,6 +18,7 @@ from api.v1 import (
     vehicle_services_router,
     trips_router,
     incidents_router,
+    positions_router,
 )
 
 from core.config import settings
@@ -39,16 +40,17 @@ app.add_middleware(
 )
 
 app.include_router(users_router, prefix='/api/v1/users', tags=['Users'])
+app.include_router(alerts_router, prefix='/api/v1/alerts', tags=['User alerts'])
 app.include_router(drivers_router, prefix='/api/v1/drivers', tags=['Drivers'])
 app.include_router(vehicles_router, prefix='/api/v1/vehicles', tags=['Vehicles'])
-app.include_router(locations_router, prefix='/api/v1/locations', tags=['Known locations'])
-app.include_router(link_router, prefix='/api/v1/link_bot', tags=['Link Telegram Bot'])
-app.include_router(alerts_router, prefix='/api/v1/alerts', tags=['User alerts'])
-app.include_router(codes_router, prefix='/api/v1/codes', tags=['Codes catalog'])
-app.include_router(vehicle_devices_router, prefix='/api/v1/vehicle_devices', tags=['Vehicle devices'])
 app.include_router(vehicle_services_router, prefix='/api/v1/vehicle_services', tags=['Vehicle services'])
+app.include_router(vehicle_devices_router, prefix='/api/v1/vehicle_devices', tags=['Vehicle devices'])
+app.include_router(locations_router, prefix='/api/v1/locations', tags=['Known locations'])
+app.include_router(positions_router, prefix='/api/v1/tracking', tags=['Tracking'])
 app.include_router(trips_router, prefix='/api/v1/trips', tags=['Trips'])
 app.include_router(incidents_router, prefix='/api/v1/incidents', tags=['Incidents'])
+app.include_router(codes_router, prefix='/api/v1/codes', tags=['Codes catalog'])
+app.include_router(link_router, prefix='/api/v1/link_bot', tags=['Link Telegram Bot'])
 
 @app.get('/health', tags=['Health'])
 def health_check() -> dict[str, str]:
@@ -58,5 +60,5 @@ def health_check() -> dict[str, str]:
 async def integrity_error_handler(request: Request, exc: IntegrityError):
     return JSONResponse(
         status_code=409,
-        content={"detail": "El registro viola una restricción (duplicado o referencia inválida)"},
+        content={"detail": "The entry cannot be added (duplicated or invalid reference)"},
     )

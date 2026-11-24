@@ -13,6 +13,7 @@
 - [Servicios a vehículos](#servicios-a-vehículos)
 - [Dispositivos en vehículos](#dispositivos-en-vehículos)
 - [Ubicaciones conocidas](#ubicaciones-conocidas)
+- [Rastreo](#rastreo)
 - [Viajes](#viajes)
 - [Incidentes](#incidentes)
 - [Catalogo de códigos](#catalogo-de-códigos)
@@ -57,7 +58,6 @@
 | GET    | `/api/v1/vehicles/{vehicle_id}`           | Obtiene los detalles de un vehículo en específico.           |           |
 | POST   | `/api/v1/vehicles`                        | Registra un nuevo vehículo.                                  |           |
 | PUT    | `/api/v1/vehicles/{vehicle_id}`           | Actualiza la información de un vehículo en específico.       |           |
-| GET    | `/api/v1/vehicles/{vehicle_id}/positions` | Obtiene el registro de posiciones de vehículo en específico. |           |
 | GET    | `/api/v1/vehicles/{vehicle_id}/events`    | Obtiene el registro de eventos de un vehículo en específico. |           |
 | POST   | `/api/v1/vehicles/{vehicle_id}/events`    | Registra un evento de un vehículo.                           |           |
 
@@ -88,6 +88,13 @@
 | POST   | `/api/v1/locations`               | Registra una nueva ubicación conocida.                   |           |
 | PUT    | `/api/v1/locations/{location_id}` | Actualiza la información de una ubicación en específica. |           |
 
+### Rastreo
+
+| Método | URL                          | Descripción                                                      | Respuesta |
+| ------ | ---------------------------- | ---------------------------------------------------------------- | --------- |
+| GET    | `/api/v1/tracking/positions` | Obtiene las posiciones individuales de los vehículos rastreados. |           |
+| GET    | `/api/v1/tracking/routes`    | Obtiene las rutas de los vehículos rastreados.                   |           |
+
 ### Viajes
 
 | Método | URL                                 | Descripción                                         | Respuesta |
@@ -96,7 +103,6 @@
 | GET    | `/api/v1/trips/{trip_id}`           | Obtiene los detalles de un viaje en específico.     |           |
 | POST   | `/api/v1/trips`                     | Registra un nuevo viaje.                            |           |
 | PUT    | `/api/v1/trips/{trip_id}`           | Actualiza la información de un viaje en específico. |           |
-| GET    | `/api/v1/trips/{trip_id}/positions` | Obtiene las posiciones de un viaje en específico.   |           |
 
 ### Incidentes
 
