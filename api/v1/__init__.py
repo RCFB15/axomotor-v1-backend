@@ -3,3 +3,9 @@ from .driver_api import router as drivers_router
 from .link_api import router as link_router
 from .vehicle_api import router as vehicles_router
 from .locations_api import router as locations_router
+from .alerts_api import router as alerts_router
+from .code_api import router as codes_router
+from .vehicle_device_api import router as vehicle_devices_router
+from .vehicle_service_api import router as vehicle_services_router
+from .trip_api import router as trips_router
+from .incident_api import router as incidents_router
