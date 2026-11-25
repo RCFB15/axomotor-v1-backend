@@ -9,7 +9,7 @@ from models.enums import IncidentStatus, PriorityLevel
 if TYPE_CHECKING:
     from models.trip import Trip
     from models.user import User
-    from models.codes import IncidentCode
+    from models.event_code import EventCode
     from models.incident_media import IncidentMedia
 
 class Incident(SQLModel, table=True):
@@ -17,7 +17,7 @@ class Incident(SQLModel, table=True):
 
     incident_id: uuid.UUID = Field(default_factory=uuid.uuid4, primary_key=True)
     trip_id: uuid.UUID = Field(foreign_key='trips.trip_id', index=True)
-    code: str = Field(foreign_key='incident_codes.code', max_length=12)
+    code: str = Field(foreign_key='event_codes.code', max_length=12)
     priority: PriorityLevel = Field(default=PriorityLevel.medium)
     status: IncidentStatus = Field(default=IncidentStatus.open)
     # Se usa sa_column para definir el tipo espacial de PostGIS
@@ -39,7 +39,7 @@ class Incident(SQLModel, table=True):
         back_populates='related_incident'
     )
     trip: Optional['Trip'] = Relationship(back_populates='incidents')
-    info: Optional['IncidentCode'] = Relationship(back_populates='incidents')
+    info: Optional['EventCode'] = Relationship(back_populates='incidents')
     created_by: Optional['User'] = Relationship(
         back_populates='incidents_created',
         sa_relationship_kwargs={'foreign_keys': '[Incident.created_by_id]'}

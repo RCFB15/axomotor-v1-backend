@@ -1,7 +1,7 @@
 from .enums import *
 from .user import User
 from .driver import Driver
-from .codes import VehicleEventCode, IncidentCode
+from .event_code import EventCode
 from .incident import Incident
 from .trip import Trip
 from .user import User

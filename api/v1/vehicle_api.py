@@ -21,7 +21,7 @@ from models import (
     Vehicle,
     User,
     VehicleEvent,
-    VehicleEventCode,
+    EventCode,
     VehicleType,
     VehicleStatus,
 )
@@ -160,12 +160,7 @@ def create_event(
     session: Session = Depends(get_session),
 ):
     get_or_404(session, Vehicle, vehicle_id, "Vehicle")
-    info = session.get(VehicleEventCode, event_data.code)
-    if info is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid event code"
-        )
+    get_or_404(session, EventCode, event_data.code, "Event Code")
 
     event = VehicleEvent(
         code = event_data.code,

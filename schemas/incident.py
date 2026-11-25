@@ -9,7 +9,7 @@ from sqlmodel import SQLModel
 
 from models.enums import IncidentStatus, PriorityLevel
 from schemas.position import PositionCreateBase
-from schemas.incident_code import IncidentCodeResponse
+from schemas.event_code import EventCodeResponse
 from schemas.user import UserResponse
 from schemas.trip import TripResponse
 
@@ -33,7 +33,7 @@ class IncidentResponse(SQLModel):
     incident_id: UUID
     trip_id: UUID
     code: str = Field(exclude=True)
-    info: IncidentCodeResponse
+    info: EventCodeResponse
     position: Any = Field(exclude=True)
     priority: PriorityLevel
     status: IncidentStatus

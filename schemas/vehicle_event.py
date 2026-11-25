@@ -8,7 +8,7 @@ from pydantic import Field, computed_field
 from sqlmodel import SQLModel
 
 from schemas.position import PositionCreateBase
-from schemas.vehicle_event_code import VehicleEventCodeResponse
+from schemas.event_code import EventCodeResponse
 
 class VehicleEventCreate(PositionCreateBase):
     code: str = Field(max_length=12)
@@ -18,7 +18,7 @@ class VehicleEventResponse(SQLModel):
     event_id: UUID
     vehicle_id: UUID
     code: str = Field(exclude=True)
-    info: VehicleEventCodeResponse
+    info: EventCodeResponse
     position: Any = Field(exclude=True)
     additional_data: Optional[Dict[str, Any]] = None
     registered_at: datetime

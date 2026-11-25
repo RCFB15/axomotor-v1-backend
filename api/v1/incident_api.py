@@ -16,7 +16,7 @@ from api.v1.common import (
 )
 from api.v1.dependencies import get_current_user
 from db.database import get_session
-from models import Incident, IncidentCode, Trip, User
+from models import Incident, EventCode, Trip, User
 from models.enums import IncidentStatus, PriorityLevel
 from schemas.incident import (
     IncidentCreate,
@@ -55,7 +55,7 @@ def register_incident(
     current_user: User = Depends(get_current_user),
 ) -> Incident:
     get_or_404(session, Trip, incident_data.trip_id, "Trip")
-    get_or_404(session, IncidentCode, incident_data.code, "Incident code")
+    get_or_404(session, EventCode, incident_data.code, "Incident code")
     if incident_data.related_incident_id is not None:
         get_or_404(session, Incident, incident_data.related_incident_id, "Related incident")
 
@@ -156,7 +156,7 @@ def update_incident(
     incident = get_or_404(session, Incident, incident_id, "Incident")
 
     if incident_data.code is not None:
-        get_or_404(session, IncidentCode, incident_data.code, "Incident code")
+        get_or_404(session, EventCode, incident_data.code, "Incident code")
     if incident_data.related_incident_id is not None:
         if incident_data.related_incident_id == incident_id:
             raise HTTPException(

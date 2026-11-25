@@ -1,9 +1,16 @@
 from enum import Enum
 
+class EventCategory(str, Enum):
+    incident = 'INCIDENT'
+    vehicle = 'VEHICLE'
+    both = 'BOTH'
+
 class SeverityLevel(str, Enum):
+    critical = 'CRITICAL'
+    high = 'HIGH'
+    medium = 'MEDIUM'
+    low = 'LOW'
     info = 'INFO'
-    warning = 'WARNING'
-    danger = 'DANGER'
 
 class PriorityLevel(str, Enum):
     low = 'LOW'
