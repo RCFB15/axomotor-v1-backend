@@ -66,3 +66,4 @@ Para realizar cambios en este repositorio es necesario crear un fork y una nueva
 - [Modelos DB](models/readme.md)
 - [Referencia de API](api/readme.md)
 - [Tipos de datos (schemas)](schemas/readme.md)
+- [Referencia de códigos de eventos](db/event-codes.md)
