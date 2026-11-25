@@ -1,6 +1,6 @@
 from typing import List, TYPE_CHECKING
 from sqlmodel import SQLModel, Field, Relationship
-from models.enums import SeverityLevel, EventCategory
+from models.enums import SeverityLevel, EventCategory, EventType
 
 if TYPE_CHECKING:
     from models.vehicle_event import VehicleEvent
@@ -11,6 +11,7 @@ class EventCode(SQLModel, table=True):
 
     code: str = Field(primary_key=True, max_length=12)
     description: str = Field(index=True, unique=True, max_length=40)
+    type: EventType
     category: EventCategory
     severity: SeverityLevel
     is_enabled: bool = Field(default=True)

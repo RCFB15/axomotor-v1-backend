@@ -1,6 +1,20 @@
 from enum import Enum
 
 class EventCategory(str, Enum):
+    device = 'DEVICE'
+    sensor = 'SENSOR'
+    tracking = 'TRACKING'
+    network = 'NETWORK'
+    access = 'ACCESS'
+    mechanical = 'MECHANICAL'
+    accident = 'ACCIDENT'
+    cargo = 'CARGO'
+    security = 'SECURITY'
+    route = 'ROUTE'
+    driver = 'DRIVER'
+    other = 'OTHER'
+
+class EventType(str, Enum):
     incident = 'INCIDENT'
     vehicle = 'VEHICLE'
     both = 'BOTH'
