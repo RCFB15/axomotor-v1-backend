@@ -8,6 +8,9 @@ AxoMotor es un sistema de monitoreo vehicular que protege el automóvil de robos
 
 ## Instalación
 
+> [!IMPORTANT]
+> Para registrar los códigos de eventos e incidencias es necesario aplicar las migraciones de la base de datos y poblarla. Consultar paso 6.
+
 **Componentes requieridos:**
 
 - Git

@@ -19,15 +19,14 @@ En este documento se describe la estructura de los modelos de datos utilizados p
 - [users](#users)
 - [user_alerts](#user_alerts)
 - [drivers](#drivers)
+- [event_codes](#event_codes)
 - [vehicles](#vehicles)
 - [vehicle_services](#vehicle_services)
-- [vehicle_event_codes](#vehicle_event_codes)
 - [vehicle_events](#vehicle_events)
 - [vehicle_devices](#vehicle_devices)
 - [known_locations](#known_locations)
 - [trips](#trips)
 - [positions](#positions)
-- [incident_codes](#incident_codes)
 - [incidents](#incidents)
 - [incident_media](#incident_media)
 
@@ -94,6 +93,19 @@ Almacena los tokens de vinculación de los conductores con el bot de Telegram.
 | driver_id  | UUID      |          | FK, NOT NULL      | Identificador del conductor vinculado. Se relaciona con la columna driver_id de la tabla [drivers](#drivers). |
 | created_at | TIMESTAMP |          | NOT NULL, DEFAULT | Marca de tiempo de creación del token. Por defecto es la fecha y hora actual.                     |
 
+### event_codes
+
+Define los códigos de eventos aplicables a eventos de vehículos e incidencias.
+
+| Columna     | Tipo                          | Longitud | Restricción      | Descripción                                                         |
+| ----------- | ----------------------------- | -------- | ---------------- | ------------------------------------------------------------------- |
+| code        | STRING                        | 12       | PK               | Código de evento.                                                   |
+| description | STRING                        | 40       | NOT NULL, UNIQUE | Descripción del evento.                                             |
+| type        | ENUM(INCIDENT, VEHICLE, BOTH) |          | NOT NULL         | Tipo de código. Puede ser: vehículo, incidente, ambos |
+| category    | ENUM(DEVICE, SENSOR, TRACKING, NETWORK, ACCESS, MECHANICAL, ACCIDENT, CARGO, SECURITY, ROUTE, DRIVER, OTHER) |          | NOT NULL | Categoría del evento. |
+| severity    | ENUM(INFO, LOW, MEDIUM, HIGH, CRITICAL) |          | NOT NULL         | Severidad del evento. Puede ser: informativo, baja, media, alta, crítica. |
+| is_enabled  | BOOL                          |          | NOT NULL         | Indica si el código está habilitado. Por defecto es TRUE. |
+
 ### vehicles
 
 Almacena la información de los vehículos registrados.
@@ -129,16 +141,6 @@ Almacena la información acerca de los servicios de mantenimiento a los vehícul
 | authorized_by_id  | UUID                                                        |          |                   | Identificador del usuario que autoriza la realización del servicio de mantenimiento. Se relaciona con la columna user_id de la tabla [users](#users). |
 | registered_at     | TIMESTAMP                                                   |          | NOT NULL, DEFAULT | Marca de tiempo de registro del servicio. Por defecto es la fecha y hora actual.                                                            |
 | updated_at        | TIMESTAMP                                                   |          |                   | Marca de tiempo de actualización del servicio. Por defecto es la fecha y hora actual.                                                       |
-
-### vehicle_event_codes
-
-Define los códigos de eventos de vehículo con descripción y severidad.
-
-| Columna     | Tipo                          | Longitud | Restricción      | Descripción                                                         |
-| ----------- | ----------------------------- | -------- | ---------------- | ------------------------------------------------------------------- |
-| code        | STRING                        | 12       | PK               | Código de evento.                                                   |
-| description | STRING                        | 40       | NOT NULL, UNIQUE | Descripción del evento.                                             |
-| severity    | ENUM(INFO, WARNING, CRITICAL) |          | NOT NULL         | Severidad del evento. Puede ser: información, advertencia, crítico. |
 
 ### vehicle_events
 
@@ -216,16 +218,6 @@ Almacena los registros de ubicación de los vehículos.
 | position      | GEOGRAPHY(Point, 4326) |          | NOT NULL     | Coordenadas geográficas registradas del vehículo en el trayecto.                                                            |
 | speed         | NUMERIC                | 5,2      | NOT NULL     | Velocidad instantánea registrada del vehículo en km/h.                                                                      |
 | registered_at | TIMESTAMP              |          | NOT NULL     | Marca de tiempo de captura de la posición. Por defecto es la fecha y hora actual.                                           |
-
-### incident_codes
-
-Definir los códigos de incidentes con descripción y severidad.
-
-| Columna     | Tipo                          | Longitud | Restricción      | Descripción                                                               |
-| ----------- | ----------------------------- | -------- | ---------------- | ------------------------------------------------------------------------- |
-| code        | STRING                        | 12       | PK               | Código de la incidencia.                                                  |
-| description | STRING                        | 40       | NOT NULL, UNIQUE | Descripción de la incidencia.                                             |
-| severity    | ENUM(INFO, WARNING, CRITICAL) |          | NOT NULL         | Severidad de la incidencia. Puede ser: información, advertencia, crítico. |
 
 ### incidents
 

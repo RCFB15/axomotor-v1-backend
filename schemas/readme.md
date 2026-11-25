@@ -31,9 +31,9 @@ Referencias de emojis:
 - [User](#user)
 - [UserAlert](#useralert)
 - [Driver](#driver)
+- [EventCode](#eventcode)
 - [Vehicle](#vehicle)
 - [VehicleService](#vehicleservice)
-- [VehicleEventCode](#vehicleeventcode)
 - [VehicleEvent](#vehicleevent)
 - [VehicleDevice](#vehicledevice)
 - [KnownLocation](#knownlocation)
@@ -41,7 +41,6 @@ Referencias de emojis:
 - [Trip](#trip)
 - [Position](#position)
 - [Route](#route)
-- [IncidentCode](#incidentcode)
 - [Incident](#incident)
 - [IncidentMedia](#incidentmedia)
 
@@ -110,6 +109,19 @@ Representa a un conductor de vehículos registrado.
 | registered_at    | DateTime              |          | 🟢    | Marca de tiempo de registro del conductor.                                                                                                              |
 | updated_at       | DateTime              |          | 🟡    | Marca de tiempo de actualización del conductor.                                                                                                         |
 
+### EventCode
+
+Establece la información asociada a un código de evento aplicable a un evento de vehículo o incidencia.
+
+| Campo       | Tipo                    | Longitud | Incluir | Descripción                                                      |
+| ----------- | ----------------------- | -------- | ---- | ------------------------------------------------------------------- |
+| code        | String                  | 12       | 🔑   | Código de evento.                                                   |
+| description | String                  | 40       | 🟢   | Descripción del evento.                                             |
+| type        | INCIDENT, VEHICLE, BOTH |          | 🟢   | Tipo de código. Puede ser: vehículo, incidente, ambos               |
+| category    | DEVICE, SENSOR, TRACKING, NETWORK, ACCESS, MECHANICAL, ACCIDENT, CARGO, SECURITY, ROUTE, DRIVER, OTHER |          | 🟢   | Categoría del evento. |
+| severity    | INFO, LOW, MEDIUM, HIGH, CRITICAL  | 🟢   | Severidad del evento. Puede ser: informativo, baja, media, alta, crítica. |
+| is_enabled  | Boolean                 |          | 🟢   | Indica si el código está habilitado.                                |
+
 ### Vehicle
 
 Representa a un vehículo registrado
@@ -147,16 +159,6 @@ Representa un servicio de mantenimiento dado a un vehículo.
 | authorized_by     | [User](#user)                                         |          | 🔵    | Objeto con información del usuario que autoriza la realización del servicio de mantenimiento.                                                       |
 | registered_at     | DateTime                                              |          | 🟢    | Marca de tiempo de registro del servicio.                                                                                                  |
 | updated_at        | DateTime                                              |          | 🟡    | Marca de tiempo de actualización del servicio.                                                                                             |
-
-### VehicleEventCode
-
-Agrega información a un evento de vehículo.
-
-| Campo       | Tipo                    | Longitud | Incluir | Descripción                                                         |
-| ----------- | ----------------------- | -------- | ---- | ------------------------------------------------------------------- |
-| code        | String                  | 12       | 🔑   | Código de evento.                                                   |
-| description | String                  | 40       | 🟢    | Descripción del evento.                                             |
-| severity    | INFO, WARNING, CRITICAL |          | 🟢    | Severidad del evento. Puede ser: información, advertencia, crítico. |
 
 ### VehicleEvent
 
@@ -264,16 +266,6 @@ Describe la trayectoria de un vehículo en un rango de tiempo definido.
 | average_speed  | Float                |         | 🟢    | Velocidad promedio registrada del vehículo en km/h.               |
 | started_at | DateTime               |          | 🟢    | Marca de tiempo de inicio de la trayectoria. |
 | finished_at | DateTime               |          | 🟢    | Marca de tiempo de fin de la trayectoria. |
-
-### IncidentCode
-
-Establece la información acerca de una incidencia.
-
-| Campo       | Tipo                    | Longitud | Incluir | Descripción                                                               |
-| ----------- | ----------------------- | -------- | ---- | ------------------------------------------------------------------------- |
-| code        | String                  | 12       | 🔑   | Código de la incidencia.                                                  |
-| description | String                  | 40       | 🟢    | Descripción de la incidencia.                                             |
-| severity    | INFO, WARNING, CRITICAL |          | 🟢    | Severidad de la incidencia. Puede ser: información, advertencia, crítico. |
 
 ### Incident
 
