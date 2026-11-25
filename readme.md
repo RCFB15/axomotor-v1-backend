@@ -16,21 +16,41 @@ AxoMotor es un sistema de monitoreo vehicular que protege el automóvil de robos
 
 **Pasos:**
 
-1. Clonar este repositorio `git clone https://github.com/ddiazcts293/axomotor-v1-backend.git`.
-2. Inicializar un nuevo entorno virtual de Python en el directorio del proyecto `python -m venv .venv` (usar `py` en Windows).
-3. Instalar dependencias `pip install -r requirements.txt`.
+1. Clonar este repositorio.
+```bash
+git clone https://github.com/ddiazcts293/axomotor-v1-backend.git
+```
+2. Inicializar un nuevo entorno virtual de Python en el directorio del proyecto (usar `py` en Windows).
+
+```bash
+python -m venv .venv
+```
+3. Instalar dependencias.
+```bash
+pip install -r requirements.txt
+```
 4. Crear una copia de `template.env` llamada `.env` y establecer la configuración del entorno. Se puede utilizar [RandomKeygen](https://randomkeygen.com/) para generar los valores de API Keys y JWT Secrets.
-5. Levantar contendores con Docker `docker compose up -d`.
-6. Aplicar migraciones con `alembic upgrade head`.
-7. Iniciar servidor API rest con `fastapi dev`.
+5. Levantar contendores con Docker.
+```bash
+docker compose up -d
+```
+6. Aplicar migraciones y poblar base de datos.
+```bash
+alembic upgrade head
+python -m db.seed
+```
+7. Iniciar servidor API rest de FastAPI.
+```bash
+fastapi dev
+```
 
 El sitio es accesible a través del localhost en el puerto 8000.
 
 **URLs:**
 
-- Swagger: `http://localhost:8000/docs/`
-- MinIO: `http://localhost:9001/`
-- Adminer: `http://localhost:8080/`
+- Swagger: [http://localhost:8000/docs/](http://localhost:8000/docs/)
+- MinIO: [http://localhost:9001/](http://localhost:9001/)
+- Adminer: [http://localhost:8080/](http://localhost:8080/)
 
 ## Contribuir
 

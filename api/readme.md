@@ -119,5 +119,4 @@
 
 | Método | URL                                     | Descripción                        | Respuesta |
 | ------ | --------------------------------------- | ---------------------------------- | --------- |
-| GET    | `/api/v1/codes/incidents` | Obtiene un listado de los códigos de incidentes. |           |
-| GET    | `/api/v1/codes/events`    | Obtiene un listado de los códigos de eventos.    |           |
+| GET    | `/api/v1/codes` | Obtiene un listado de los códigos de eventos e incidentes. |           |
