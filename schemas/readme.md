@@ -40,6 +40,7 @@ Referencias de emojis:
 - [KnownLocationSimple](#knownlocationsimple)
 - [Trip](#trip)
 - [Position](#position)
+- [Route](#route)
 - [IncidentCode](#incidentcode)
 - [Incident](#incident)
 - [IncidentMedia](#incidentmedia)
@@ -182,7 +183,7 @@ Representa a un dispositivo físico instalado en un vehículo.
 | serial_number | String    | 12       | 🟢    | Número de serie de fabricación del dispositivo.                                                                                                                                                |
 | tag           | String    | 16       | 🟢    | Etiqueta o identificador alfanumérico visible asignado al dispositivo.                                                                                                                         |
 | type          | HUB, NODE |          | 🟢    | Tipo de dispositivo telemático o sensor instalado en el vehículo. Puede ser: hub (concentrador que procesa los datos de los sensores), node (dispositivo equipado con sensor, cámara o ambos). |
-| battery_level | Int       |          | 🟢    | Nivel porcentual o carga actual de la batería del dispositivo.                                                                                                                                 |
+| battery_level | Int       |          | 🟡    | Nivel porcentual o carga actual de la batería del dispositivo.                                                                                                                                 |
 | is_active     | Boolean   |          | 🟢    | Indica si el dispositivo se encuentra activo y transmitiendo datos.                                                                                                                            |
 | is_enabled    | Boolean   |          | 🟢    | Indica si el dispositivo se encuentra habilitado.                                                                                                                                              |
 | registered_at | DateTime  |          | 🟢    | Marca de tiempo de registro del dispositivo.                                                                                                                                                   |
@@ -245,8 +246,24 @@ Describe la posición GPS de un vehículo en un momento dado.
 | vehicle_id    | UUID                   |          | 🟢    | Identificador del vehículo que registro la posición. |
 | trip_id       | UUID                   |          | 🟡    | Identificador del viaje al cual corresponde el registro de posición. |
 | geojson         | [GeoJSON](https://www.rfc-editor.org/info/rfc7946/#appendix-A.1) |          | 🟢         | Objeto GeoJSON de tipo `Point` con las coordenadas longitud y latitud registradas. |
-| speed         | Decimal                | 5,2      | 🟢    | Velocidad instantánea registrada del vehículo en km/h.               |
+| speed         | Float                |         | 🟢    | Velocidad instantánea registrada del vehículo en km/h.               |
 | registered_at | DateTime               |          | 🟢    | Marca de tiempo de captura de la posición.                           |
+
+### Route
+
+Describe la trayectoria de un vehículo en un rango de tiempo definido.
+
+| Campo         | Tipo                   | Longitud | Incluir | Descripción                                                          |
+| ------------- | ---------------------- | -------- | ---- | -------------------------------------------------------------------- |
+| vehicle_id    | UUID                   |          | 🟢    | Identificador del vehículo que registro la posición. |
+| trip_id       | UUID                   |          | 🟡    | Identificador del viaje al cual corresponde el registro de posición. |
+| geojson         | [GeoJSON](https://www.rfc-editor.org/info/rfc7946/#appendix-A.2) |          | 🟢         | Objeto GeoJSON de tipo `LineString` con una lista de las coordenadas longitud y latitud registradas. |
+| point_count    | Int                 |         | 🟢    | Cantidad de puntos registrados en la base de datos. |
+| render_point_count | Int                 |         | 🟢    | Cantidad de puntos simplificados. |
+| distance       | Float                |         | 🟢    | Distancia recorrida en metros.               |
+| average_speed  | Float                |         | 🟢    | Velocidad promedio registrada del vehículo en km/h.               |
+| started_at | DateTime               |          | 🟢    | Marca de tiempo de inicio de la trayectoria. |
+| finished_at | DateTime               |          | 🟢    | Marca de tiempo de fin de la trayectoria. |
 
 ### IncidentCode
 

@@ -46,6 +46,7 @@ class UserResponse(SQLModel):
     email: EmailStr = Field(max_length=120)
     username: str = Field(min_length=3, max_length=16)
     phone_number: str = Field(max_length=16)
+    role: UserRole
     is_enabled: bool
     registered_at: datetime
     updated_at: Optional[datetime] = None

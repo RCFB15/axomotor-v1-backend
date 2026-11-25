@@ -1,21 +1,37 @@
 from uuid import UUID
+from typing import Optional
+from datetime import datetime
 
-from fastapi import APIRouter, Depends, Response, HTTPException, status
-from sqlalchemy import func, cast
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import joinedload
 from sqlmodel import Session, select, col
-from geoalchemy2 import Geometry
 from geoalchemy2.elements import WKTElement
 
+from api.v1.common import (
+    PaginationDep,
+    apply_update,
+    commit_or_409,
+    get_or_404,
+    paginate
+)
 from api.v1.dependencies import get_current_user, verify_mqtt_consumer
 from db.database import get_session
-from models import Vehicle, User, Position, VehicleEvent, VehicleEventCode
+from models import (
+    Vehicle,
+    User,
+    VehicleEvent,
+    VehicleEventCode,
+    VehicleType,
+    VehicleStatus,
+)
 from schemas.vehicle import VehicleCreate, VehicleUpdate, VehicleResponse
-from schemas.position import PositionResponse
 from schemas.vehicle_event import VehicleEventCreate, VehicleEventResponse
 
 router = APIRouter()
+
+CONFLICT_DETAIL = "The vehicle could not be saved due to a conflicting or invalid reference"
+EVENT_CONFLICT_DETAIL = "The event could not be saved due to a conflicting or invalid reference"
 
 @router.post(
     "/",
@@ -38,40 +54,52 @@ def register_vehicle(
     if existing_vehicle:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="There is already another vehicle registered with the same information",
+            detail=CONFLICT_DETAIL
         )
 
-    vehicle = Vehicle(
-        plate_number = vehicle_data.plate_number,
-        reg_number = vehicle_data.reg_number,
-        series_vin = vehicle_data.series_vin,
-        brand = vehicle_data.brand,
-        model = vehicle_data.model,
-        year = vehicle_data.year,
-        type = vehicle_data.type,
-        status = vehicle_data.status
-    )
+    data = vehicle_data.model_dump(exclude_none=True)
+    vehicle = Vehicle(**data)
 
     session.add(vehicle)
-
-    try:
-        session.commit()
-    except IntegrityError as e:
-        session.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="There is already another vehicle registered with the same information",
-        ) from None
-
+    commit_or_409(session, CONFLICT_DETAIL)
     session.refresh(vehicle)
     return vehicle
 
 @router.get("/", response_model=list[VehicleResponse])
 def get_vehicles(
+    response: Response,
+    page: PaginationDep,
+    plate_number: Optional[str] = None,
+    reg_number: Optional[str] = None,
+    series_vin: Optional[str] = None,
+    brand: Optional[str] = None,
+    model: Optional[str] = None,
+    year: Optional[int] = None,
+    vehicle_type: Optional[VehicleType] = None,
+    status: Optional[VehicleStatus] = None,
     session: Session = Depends(get_session),
     _current_user: User = Depends(get_current_user),
 ) -> list[Vehicle]:
-    return list(session.exec(select(Vehicle)).all())
+    statement = select(Vehicle)
+
+    if plate_number is not None:
+        statement = statement.where(Vehicle.plate_number == plate_number)
+    if reg_number is not None:
+        statement = statement.where(Vehicle.reg_number == reg_number)
+    if series_vin is not None:
+        statement = statement.where(Vehicle.series_vin == series_vin)
+    if brand is not None:
+        statement = statement.where(Vehicle.brand == brand)
+    if model is not None:
+        statement = statement.where(Vehicle.model == model)
+    if year is not None:
+        statement = statement.where(Vehicle.year == year)
+    if vehicle_type is not None:
+        statement = statement.where(Vehicle.type == vehicle_type)
+    if status is not None:
+        statement = statement.where(Vehicle.status == status)
+
+    return paginate(session, statement, page, response)
 
 @router.get("/{vehicle_id}", response_model=VehicleResponse)
 def get_vehicle(
@@ -79,16 +107,7 @@ def get_vehicle(
     session: Session = Depends(get_session),
     _current_user: User = Depends(get_current_user),
 ) -> Vehicle:
-    vehicle = session.exec(
-        select(Vehicle).where(Vehicle.vehicle_id == vehicle_id)
-    ).first()
-
-    if vehicle is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Vehicle not found",
-        )
-    return vehicle
+    return get_or_404(session, Vehicle, vehicle_id, "Vehicle")
 
 @router.put("/{vehicle_id}", response_model=VehicleResponse)
 def update_vehicle(
@@ -97,84 +116,38 @@ def update_vehicle(
     session: Session = Depends(get_session),
     _current_user: User = Depends(get_current_user),
 ) -> Vehicle:
-    vehicle = session.get(Vehicle, vehicle_id)
-    if vehicle is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Vehicle not found",
-        )
+    vehicle = get_or_404(session, Vehicle, vehicle_id, "Vehicle")
 
-    update_data = vehicle_data.model_dump(exclude_unset=True)
-    if any(value is None for value in update_data.values()):
-        raise HTTPException(
-            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-            detail="All fields cannot be null or empty",
-        )
-
-    if any(key in update_data for key in ['plate_number', 'reg_number', 'series_vin']):
-        duplicate = session.exec(
-            select(Vehicle).where(
-                Vehicle.vehicle_id != vehicle_id,
-                (Vehicle.plate_number == update_data.get('plate_number', vehicle.plate_number)) |
-                (Vehicle.reg_number == update_data.get('reg_number', vehicle.reg_number)) |
-                (Vehicle.series_vin == update_data.get('series_vin', vehicle.series_vin))
-            )
-        ).first()
-
-        if duplicate:
-            raise HTTPException(
-                status_code=status.HTTP_409_CONFLICT,
-                detail="There is already another vehicle registered with the same information"
-            )
-
-    for field, value in update_data.items():
-        setattr(vehicle, field, value)
-
+    apply_update(vehicle, vehicle_data)
     session.add(vehicle)
-
-    try:
-        session.commit()
-    except IntegrityError:
-        session.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="There is already another vehicle registered with the same information",
-        ) from None
-
+    commit_or_409(session, CONFLICT_DETAIL)
     session.refresh(vehicle)
     return vehicle
 
-@router.get("/{vehicle_id}/positions", response_model=list[PositionResponse])
-def get_positions(
-    vehicle_id: UUID,
-    session: Session = Depends(get_session),
-    _current_user: User = Depends(get_current_user),
-):
-    return session.exec(
-        select(
-            Position.position_id,
-            Position.vehicle_id,
-            Position.trip_id,
-            func.ST_AsGeoJSON(Position.position).label("geojson"),
-            Position.speed,
-            Position.registered_at
-        ) # type: ignore
-        .where(Position.vehicle_id == vehicle_id)
-        .order_by(col(Position.registered_at).desc())
-    ).all()
-
 @router.get("/{vehicle_id}/events", response_model=list[VehicleEventResponse])
 def get_events(
+    response: Response,
+    page: PaginationDep,
     vehicle_id: UUID,
+    code: Optional[str] = None,
+    from_date: Optional[datetime] = None,
+    to_date: Optional[datetime] = None,
     session: Session = Depends(get_session),
     _current_user: User = Depends(get_current_user),
 ) -> list[VehicleEvent]:
-    return list(session.exec(
-        select(VehicleEvent)
-            .where(VehicleEvent.vehicle_id == vehicle_id)
-            .options(joinedload(VehicleEvent.info)) # type: ignore
-            .order_by(col(VehicleEvent.registered_at).desc())
-    ).all())
+    statement = select(VehicleEvent) \
+        .where(VehicleEvent.vehicle_id == vehicle_id) \
+        .options(joinedload(VehicleEvent.info)) # type: ignore
+
+    if code is not None:
+        statement = statement.where(VehicleEvent.code == code)
+    if from_date is not None:
+        statement = statement.where(VehicleEvent.registered_at >= from_date)
+    if to_date is not None:
+        statement = statement.where(VehicleEvent.registered_at <= to_date)
+
+    statement = statement.order_by(col(VehicleEvent.registered_at).desc())
+    return paginate(session, statement, page, response)
 
 @router.post(
     "/{vehicle_id}/events",
@@ -186,14 +159,7 @@ def create_event(
     event_data: VehicleEventCreate,
     session: Session = Depends(get_session),
 ):
-    vehicle = session.get(Vehicle, vehicle_id)
-
-    if vehicle is None:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Vehicle not found",
-        )
-
+    get_or_404(session, Vehicle, vehicle_id, "Vehicle")
     info = session.get(VehicleEventCode, event_data.code)
     if info is None:
         raise HTTPException(
@@ -212,14 +178,5 @@ def create_event(
         event.position=WKTElement(position_wkt, srid=4326)
 
     session.add(event)
-
-    try:
-        session.commit()
-    except IntegrityError as e:
-        session.rollback()
-        raise HTTPException(
-            status_code=status.HTTP_409_CONFLICT,
-            detail="Failed to register the event",
-        ) from None
-
+    commit_or_409(session, EVENT_CONFLICT_DETAIL)
     return Response(status_code=status.HTTP_204_NO_CONTENT)

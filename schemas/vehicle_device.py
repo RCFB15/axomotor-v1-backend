@@ -27,7 +27,7 @@ class VehicleDeviceResponse(SQLModel):
     serial_number: str = Field(max_length=12)
     tag: str = Field(max_length=16)
     type: VehicleDeviceType
-    battery_level: int
+    battery_level: Optional[int] = None
     is_active: bool
     is_enabled: bool
     registered_at: datetime
