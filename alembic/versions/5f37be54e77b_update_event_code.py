@@ -35,12 +35,13 @@ def upgrade() -> None:
     op.drop_index(op.f('ix_incident_codes_description'), table_name='incident_codes')
     op.drop_table('incident_codes')
     postgresql.ENUM(name='severitylevel').drop(op.get_bind(), checkfirst=True)
+    postgresql.ENUM('info', 'low', 'medium', 'high', 'critical', name='severitylevel').create(op.get_bind(), checkfirst=True)
 
     op.create_table('event_codes',
     sa.Column('code', sqlmodel.sql.sqltypes.AutoString(length=12), nullable=False),
     sa.Column('description', sqlmodel.sql.sqltypes.AutoString(length=40), nullable=False),
     sa.Column('category', sa.Enum('incident', 'vehicle', 'both', name='eventcategory'), nullable=False),
-    sa.Column('severity', sa.Enum('info', 'low', 'medium', 'high', 'critical', name='severitylevel'), nullable=False),
+    sa.Column('severity', sa.Enum(name='severitylevel', create_type=False), nullable=False),
     sa.Column('is_enabled', sa.Boolean(), nullable=False),
     sa.PrimaryKeyConstraint('code')
     )
@@ -66,14 +67,14 @@ def downgrade() -> None:
     op.create_table('incident_codes',
     sa.Column('code', sa.VARCHAR(length=12), autoincrement=False, nullable=False),
     sa.Column('description', sa.VARCHAR(length=40), autoincrement=False, nullable=False),
-    sa.Column('severity', postgresql.ENUM('info', 'warning', 'danger', name='severitylevel'), autoincrement=False, nullable=False),
+    sa.Column('severity', sa.Enum('info', 'warning', 'danger', name='severitylevel'), autoincrement=False, nullable=False),
     sa.PrimaryKeyConstraint('code', name=op.f('incident_codes_pkey'))
     )
     op.create_index(op.f('ix_incident_codes_description'), 'incident_codes', ['description'], unique=True)
     op.create_table('vehicle_event_codes',
     sa.Column('code', sa.VARCHAR(length=12), autoincrement=False, nullable=False),
     sa.Column('description', sa.VARCHAR(length=40), autoincrement=False, nullable=False),
-    sa.Column('severity', postgresql.ENUM('info', 'warning', 'danger', name='severitylevel'), autoincrement=False, nullable=False),
+    sa.Column('severity', sa.Enum('info', 'warning', 'danger', name='severitylevel'), autoincrement=False, nullable=False),
     sa.PrimaryKeyConstraint('code', name=op.f('vehicle_event_codes_pkey'))
     )
     op.create_index(op.f('ix_vehicle_event_codes_description'), 'vehicle_event_codes', ['description'], unique=True)
